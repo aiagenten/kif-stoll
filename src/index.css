@@ -1,0 +1,213 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* STOLL Esportsenter Custom Styles */
+body {
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   STOLL ESPORT THEME
+   Primary: #5F4E9D (lilla)
+   Accent: #F2DE27 (gul)
+   Dark: #1C244B
+   BG: #FFFFFF / #F7F4FF
+   ======================================== */
+
+:root {
+  --color-primary: #5F4E9D;
+  --color-primary-dark: #4a3d7a;
+  --color-accent: #F2DE27;
+  --color-accent-dark: #d4c010;
+  --color-dark: #1C244B;
+  --color-darker: #111827;
+  --color-bg: #0f1120;
+  --color-surface: #1a1f35;
+  --color-surface-light: #242a45;
+  --color-text: #ffffff;
+  --color-text-muted: #9ca3af;
+  --color-border: rgba(95, 78, 157, 0.3);
+  --gradient-primary: linear-gradient(135deg, #5F4E9D 0%, #4a3d7a 100%);
+  --gradient-accent: linear-gradient(135deg, #F2DE27 0%, #d4c010 100%);
+  --gradient-hero: linear-gradient(135deg, rgba(95, 78, 157, 0.15) 0%, rgba(28, 36, 75, 0.3) 100%);
+  --glow-primary: rgba(95, 78, 157, 0.4);
+  --glow-accent: rgba(242, 222, 39, 0.4);
+}
+
+/* Background */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Smooth scroll */
+@media (min-width: 768px) {
+  html { scroll-behavior: smooth; }
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(26, 31, 53, 0.95);
+  border: 1px solid var(--color-border);
+}
+@media (min-width: 768px) {
+  .glass {
+    background: rgba(26, 31, 53, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* Gradient utilities */
+.gradient-primary {
+  background: var(--gradient-primary);
+}
+.gradient-accent {
+  background: var(--gradient-accent);
+}
+.text-gradient-primary {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-gradient-accent {
+  background: linear-gradient(135deg, #F2DE27, #ffef80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effects */
+.glow-primary {
+  box-shadow: 0 0 20px var(--glow-primary), 0 0 40px rgba(95, 78, 157, 0.2);
+}
+.glow-accent {
+  box-shadow: 0 0 20px var(--glow-accent);
+}
+
+/* Button */
+.btn-primary {
+  background: var(--gradient-primary);
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 30px var(--glow-primary);
+  transform: translateY(-2px);
+}
+.btn-accent {
+  background: var(--gradient-accent);
+  color: var(--color-dark);
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+.btn-accent:hover {
+  box-shadow: 0 8px 30px var(--glow-accent);
+  transform: translateY(-2px);
+}
+
+/* Card */
+.card-theme {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+.card-theme:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 10px 40px var(--glow-primary);
+}
+
+/* Nav link */
+.nav-link:hover {
+  color: var(--color-accent) !important;
+}
+
+/* Slide up animation */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slide-up 0.2s ease-out;
+}
+
+/* Sponsor carousel */
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-scroll-left {
+  animation: scroll-left 30s linear infinite;
+}
+.animate-scroll-left:hover {
+  animation-play-state: paused;
+}
+
+/* Esport pulse */
+@keyframes esport-pulse {
+  0%, 100% { box-shadow: 0 0 15px var(--glow-primary); }
+  50% { box-shadow: 0 0 35px var(--glow-primary), 0 0 60px rgba(242, 222, 39, 0.2); }
+}
+.animate-esport-pulse {
+  animation: esport-pulse 2.5s ease-in-out infinite;
+}
+
+/* Chat widget */
+@keyframes chat-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+.animate-chat-bounce {
+  animation: chat-bounce 2s ease-in-out infinite;
+}
+
+/* Scanlines overlay - subtle esport vibe */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Mobile performance */
+@media (max-width: 767px) {
+  .blur-3xl, .blur-2xl, .blur-xl { filter: none !important; }
+  .backdrop-blur-lg, .backdrop-blur { backdrop-filter: none !important; }
+  * { transition-duration: 0.1s !important; }
+  .animate-esport-pulse { animation: none !important; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
