@@ -310,7 +310,7 @@ export default function AdminSEO() {
                   value={formData.meta_title || ''}
                   onChange={e => setFormData(prev => ({ ...prev, meta_title: e.target.value }))}
                   className="w-full px-4 py-2 bg-white/5 border border-gray-700 rounded-lg focus:border-[#c9a227] focus:outline-none"
-                  placeholder="STOLL Esportsenter | Gaming i Bergen"
+                  placeholder="STOLL Esportsenter | Gaming i Kongsberg"
                 />
                 <div className="text-xs text-gray-500 mt-1">
                   {(formData.meta_title?.length || 0)}/60 tegn
@@ -324,7 +324,7 @@ export default function AdminSEO() {
                   onChange={e => setFormData(prev => ({ ...prev, meta_description: e.target.value }))}
                   rows={3}
                   className="w-full px-4 py-2 bg-white/5 border border-gray-700 rounded-lg focus:border-[#c9a227] focus:outline-none resize-none"
-                  placeholder="Esportsenter med gaming-fasiliteter, turneringer og coaching i Bergen..."
+                  placeholder="Esportsenter med gaming-fasiliteter, turneringer og coaching i Kongsberg..."
                 />
                 <div className="text-xs text-gray-500 mt-1">
                   {(formData.meta_description?.length || 0)}/160 tegn
@@ -341,7 +341,7 @@ export default function AdminSEO() {
                     keywords: e.target.value.split(',').map(k => k.trim()).filter(Boolean)
                   }))}
                   className="w-full px-4 py-2 bg-white/5 border border-gray-700 rounded-lg focus:border-[#c9a227] focus:outline-none"
-                  placeholder="esport bergen, gaming, turneringer"
+                  placeholder="esport kongsberg, gaming, turneringer"
                 />
               </div>
 
@@ -534,7 +534,7 @@ export default function AdminSEO() {
         
         <div className="p-4 bg-white rounded-lg text-black max-w-xl">
           <div className="text-blue-700 text-lg hover:underline cursor-pointer">
-            {formData.meta_title || 'STOLL Esportsenter | Gaming i Bergen'}
+            {formData.meta_title || 'STOLL Esportsenter | Gaming i Kongsberg'}
           </div>
           <div className="text-green-700 text-sm">
             stoll.gg › {selectedPage === 'home' ? '' : selectedPage}

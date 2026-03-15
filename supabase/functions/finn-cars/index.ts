@@ -71,7 +71,7 @@ function transformCar(car: FinnCar): TransformedCar {
     transmission: car.transmission,
     fuel: car.fuel,
     url: car.canonical_url,
-    location: car.location || 'Nesttun',
+    location: car.location || 'Kongsberg',
     warranty: car.warranty_duration || null,
   }
 }
@@ -90,7 +90,7 @@ serve(async (req) => {
 
     const response = await fetch(url.toString(), {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; DDAutoCenter/1.0)',
+        'User-Agent': 'Mozilla/5.0 (compatible; STOLLEsportsenter/1.0)',
         'Accept': 'application/json',
       },
     })

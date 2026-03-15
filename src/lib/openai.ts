@@ -3,8 +3,8 @@
 
 // Business context for AI generation - exported for edge function use
 export const BUSINESS_CONTEXT = `
-STOLL Esportsenter er Bergens fremste arena for gaming og esport.
-Beliggenhet: Bergen, Norge
+STOLL Esportsenter er Kongsbergs fremste arena for gaming og esport.
+Beliggenhet: Kongsberg, Norge
 E-post: info@stoll.gg
 
 Tjenester:
@@ -12,7 +12,7 @@ Tjenester:
 2. Turneringer: Lokale, regionale og nasjonale esport-mesterskap
 3. Treninger: Coaching, scrims og lag-trening
 4. Bursdager & arrangementer: Skreddersydde gaming-opplevelser
-5. Sponsorpakker: Synlighet og partnerskap med Bergens esportmiljø
+5. Sponsorpakker: Synlighet og partnerskap med Kongsbergs esportmiljø
 
 Åpningstider: Se stoll.gg for oppdaterte tider
 
@@ -72,29 +72,29 @@ function generateLocalFallback(options: GenerateOptions): SEOGenerationResult {
   const result: SEOGenerationResult = {}
 
   const titles: Record<string, string> = {
-    home: 'STOLL Esportsenter | Bergens Beste Gaming- og Esportsenter',
-    events: 'Events & Turneringer Bergen | STOLL Esportsenter',
+    home: 'STOLL Esportsenter | Kongsbergs Beste Gaming- og Esportsenter',
+    events: 'Events & Turneringer Kongsberg | STOLL Esportsenter',
     pakker: 'Gaming-pakker & Priser | STOLL Esportsenter',
-    sponsorer: 'Bli Sponsor | STOLL Esportsenter Bergen'
+    sponsorer: 'Bli Sponsor | STOLL Esportsenter Kongsberg'
   }
 
   const descriptions: Record<string, string> = {
-    home: 'STOLL Esportsenter er Bergens fremste arena for gaming og esport. Toppmoderne utstyr, turneringer og fellesskap for alle gamere.',
-    events: 'Se kommende turneringer, treninger og arrangementer ved STOLL Esportsenter i Bergen. Book plass og bli med!',
+    home: 'STOLL Esportsenter er Kongsbergs fremste arena for gaming og esport. Toppmoderne utstyr, turneringer og fellesskap for alle gamere.',
+    events: 'Se kommende turneringer, treninger og arrangementer ved STOLL Esportsenter i Kongsberg. Book plass og bli med!',
     pakker: 'Fleksible gaming-pakker for enkeltspillere, lag og bedrifter. Finn riktig pakke for din opplevelse hos STOLL.',
-    sponsorer: 'Bli synlig i Bergens esportmiljø. Partnerskap og sponsormuligheter med STOLL Esportsenter.'
+    sponsorer: 'Bli synlig i Kongsbergs esportmiljø. Partnerskap og sponsormuligheter med STOLL Esportsenter.'
   }
 
   const keywordSets: Record<string, string[]> = {
-    home: ['esportsenter bergen', 'gaming bergen', 'esport bergen', 'stoll esportsenter', 'gaming lokale bergen', 'esport arena norge'],
-    events: ['esport turnering bergen', 'gaming event bergen', 'cs2 turnering', 'lol turnering bergen', 'esport arrangement'],
-    pakker: ['gaming pakke bergen', 'esport pakke', 'gaming leie bergen', 'pc gaming bergen'],
-    sponsorer: ['esport sponsor bergen', 'gaming sponsor norge', 'esport markedsføring']
+    home: ['esportsenter kongsberg', 'gaming kongsberg', 'esport kongsberg', 'stoll esportsenter', 'gaming lokale kongsberg', 'esport arena norge'],
+    events: ['esport turnering kongsberg', 'gaming event kongsberg', 'cs2 turnering', 'lol turnering kongsberg', 'esport arrangement'],
+    pakker: ['gaming pakke kongsberg', 'esport pakke', 'gaming leie kongsberg', 'pc gaming kongsberg'],
+    sponsorer: ['esport sponsor kongsberg', 'gaming sponsor norge', 'esport markedsføring']
   }
 
   const faqs: Record<string, Array<{ question: string; answer: string }>> = {
     home: [
-      { question: 'Hva er STOLL Esportsenter?', answer: 'STOLL Esportsenter er Bergens fremste arena for gaming og esport, med toppmoderne utstyr og et aktivt fellesskap.' },
+      { question: 'Hva er STOLL Esportsenter?', answer: 'STOLL Esportsenter er Kongsbergs fremste arena for gaming og esport, med toppmoderne utstyr og et aktivt fellesskap.' },
       { question: 'Hva tilbyr dere?', answer: 'Vi tilbyr gaming-lokaler, turneringer, treninger, bursdager og skreddersydde bedriftsarrangementer.' },
       { question: 'Kan jeg booke lokaler?', answer: 'Ja! Ta kontakt via nettsiden eller e-post for å booke tid hos oss.' }
     ],
@@ -109,7 +109,7 @@ function generateLocalFallback(options: GenerateOptions): SEOGenerationResult {
       { question: 'Kan jeg leie for en gruppe?', answer: 'Absolutt! Vi har plasser for grupper av alle størrelser. Kontakt oss for tilbud.' }
     ],
     sponsorer: [
-      { question: 'Hvem kan bli sponsor?', answer: 'Alle bedrifter som ønsker synlighet i Bergens esport- og gamingmiljø kan bli partner.' },
+      { question: 'Hvem kan bli sponsor?', answer: 'Alle bedrifter som ønsker synlighet i Kongsbergs esport- og gamingmiljø kan bli partner.' },
       { question: 'Hva får jeg som sponsor?', answer: 'Logoeksponering, sosiale medier-omtale, turnerings-branding og mer avhengig av pakke.' },
       { question: 'Hvordan tar jeg kontakt?', answer: 'Send e-post til info@stoll.gg for en uforpliktende prat om sponsormuligheter.' }
     ]
@@ -130,10 +130,10 @@ function generateLocalFallback(options: GenerateOptions): SEOGenerationResult {
       "@context": "https://schema.org",
       "@type": "SportsActivityLocation",
       "name": "STOLL Esportsenter",
-      "description": "Bergens fremste arena for gaming og esport",
+      "description": "Kongsbergs fremste arena for gaming og esport",
       "address": {
         "@type": "PostalAddress",
-        "addressLocality": "Bergen",
+        "addressLocality": "Kongsberg",
         "addressCountry": "NO"
       },
       "url": "https://stoll.gg"

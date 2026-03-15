@@ -23,7 +23,7 @@ const defaultReviews = [
   {
     author: 'Jonas H.',
     rating: 5,
-    text: 'Endelig et ordentlig esportsenter i Bergen! 144Hz skjermer, kraftige PCer og god internett. Alt du trenger.',
+    text: 'Endelig et ordentlig esportsenter i Kongsberg! 144Hz skjermer, kraftige PCer og god internett. Alt du trenger.',
   },
 ]
 
@@ -144,7 +144,7 @@ export default function Reviews() {
           className="text-center mt-12"
         >
           <motion.a
-            href="https://www.google.com/maps/search/STOLL+Esportsenter+Bergen"
+            href="https://www.google.com/maps/search/STOLL+Esportsenter+Kongsberg"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center space-x-2 btn-primary px-8 py-4 rounded-full font-bold"

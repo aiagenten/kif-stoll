@@ -20,16 +20,16 @@ const defaultStructuredData = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "name": "STOLL Esportsenter",
-  "image": "https://ddautocenter.no/logo.png",
-  "@id": "https://ddautocenter.no",
-  "url": "https://ddautocenter.no",
+  "image": "https://stoll.gg/logo.png",
+  "@id": "https://stoll.gg",
+  "url": "https://stoll.gg",
   "telephone": "+47 400 80 071",
-  "email": "info@ddautocenter.no",
+  "email": "info@stoll.gg",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Ulsmågvegen 12",
-    "addressLocality": "Nesttun",
-    "postalCode": "5224",
+    "addressLocality": "Kongsberg",
+    "postalCode": "3616",
     "addressCountry": "NO"
   },
   "geo": {
@@ -46,13 +46,13 @@ const defaultStructuredData = {
     }
   ],
   "sameAs": [
-    "https://www.facebook.com/ddautocenter",
-    "https://www.instagram.com/ddautocenter"
+    "https://www.facebook.com/stoll.esport",
+    "https://www.instagram.com/stoll.esport"
   ],
   "priceRange": "$$",
   "areaServed": {
     "@type": "City",
-    "name": "Bergen"
+    "name": "Kongsberg"
   }
 }
 

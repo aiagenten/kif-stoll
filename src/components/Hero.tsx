@@ -6,7 +6,7 @@ export default function Hero() {
   const { content } = useContent()
 
   const title = content['hero_title'] || 'NORGES BESTE ESPORTSENTER!'
-  const subtitle = content['hero_subtitle'] || 'STOLL Esportsenter er Bergens fremste arena for gaming og esport.'
+  const subtitle = content['hero_subtitle'] || 'STOLL Esportsenter er Kongsbergs fremste arena for gaming og esport.'
   const heroImage = content['hero_image'] || ''
 
   const stats = [
@@ -62,7 +62,7 @@ export default function Hero() {
           }}
         >
           <span>⚡</span>
-          <span>Bergen's #1 Esportsenter</span>
+          <span>Kongsberg's #1 Esportsenter</span>
           <span>⚡</span>
         </motion.div>
 

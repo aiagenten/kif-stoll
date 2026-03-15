@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS blog_posts (
   excerpt TEXT,
   content TEXT NOT NULL,
   featured_image TEXT,
-  author TEXT DEFAULT 'DD Auto Center',
+  author TEXT DEFAULT 'STOLL Esportsenter',
   published BOOLEAN DEFAULT false,
   meta_title TEXT,
   meta_description TEXT

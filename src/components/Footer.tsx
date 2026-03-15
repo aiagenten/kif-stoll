@@ -8,7 +8,7 @@ export default function Footer() {
 
   const phone = getContentValue('contact_phone', '55 55 55 55')
   const emailGeneral = getContentValue('contact_email_verksted', 'info@stoll.gg')
-  const address = getContentValue('contact_address', 'Bergen, Norge')
+  const address = getContentValue('contact_address', 'Kongsberg, Norge')
   const openWeekdays = getContentValue('opening_weekdays', 'Man-Fre: 14:00 - 22:00')
   const openSaturday = getContentValue('opening_saturday', 'Lørdag: 11:00 - 23:00')
   const openSunday = getContentValue('opening_sunday', 'Søndag: 12:00 - 20:00')

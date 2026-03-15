@@ -48,10 +48,10 @@ const initialSections: ContentSection[] = [
     icon: Phone,
     fields: [
       { key: 'contact_phone', label: 'Telefon', type: 'text', value: '', placeholder: '400 80 071' },
-      { key: 'contact_email_verksted', label: 'E-post Verksted', type: 'text', value: '', placeholder: 'info@ddautocenter.no' },
+      { key: 'contact_email_verksted', label: 'E-post Verksted', type: 'text', value: '', placeholder: 'info@stoll.gg' },
       { key: 'contact_email_booking', label: 'E-post Booking', type: 'text', value: '', placeholder: 'booking@stoll.gg' },
       { key: 'contact_email_sponsorer', label: 'E-post Sponsorer', type: 'text', value: '', placeholder: 'sponsorer@stoll.gg' },
-      { key: 'contact_address', label: 'Adresse', type: 'text', value: '', placeholder: 'Ulsmågvegen 12, 5224 Nesttun' },
+      { key: 'contact_address', label: 'Adresse', type: 'text', value: '', placeholder: 'Kirkegata 2, 3616 Kongsberg' },
     ]
   },
   {

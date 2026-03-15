@@ -25,10 +25,10 @@ CREATE POLICY "Authenticated users can modify SEO settings" ON seo_settings
 
 -- Insert default SEO entries for main pages
 INSERT INTO seo_settings (page_key, meta_title, meta_description) VALUES
-  ('home', 'DD Auto Center | Verksted, Bilpleie & Bilsalg i Bergen', 'Profesjonelt verksted, bilpleie og bilsalg i Bergen. EU-kontroll, service, keramisk belegg og kvalitetsbiler. Besøk oss på Nesttun!'),
-  ('verksted', 'Verksted Bergen | Service & EU-kontroll | DD Auto Center', 'Full service og vedlikehold av alle bilmerker. EU-kontroll, reparasjoner og diagnostikk. Erfarne teknikere på Nesttun.'),
-  ('bilpleie', 'Bilpleie Bergen | Keramisk Belegg & Lakkforsegling | DD Auto Center', 'Profesjonell bilpleie med keramiske belegg, polering og lakkforsegling. Gi bilen din den behandlingen den fortjener.'),
-  ('bilsalg', 'Bruktbil Bergen | Kjøp & Salg av Kvalitetsbiler | DD Auto Center', 'Vi kjøper og selger kvalitetsbiler. Ta kontakt for verdivurdering eller se vårt utvalg av bruktbiler i Bergen.')
+  ('home', 'STOLL Esportsenter | Gaming & Esport i Kongsberg', 'Kongsbergs fremste esportsenter. Turneringer, gaming-fasiliteter, coaching og fellesskap. Bli med!'),
+  
+  
+  
 ON CONFLICT (page_key) DO NOTHING;
 
 -- Create updated_at trigger

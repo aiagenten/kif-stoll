@@ -73,8 +73,8 @@ export const structuredDataTemplates = {
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Ulsmågvegen 12",
-      "addressLocality": "Nesttun",
-      "postalCode": "5224",
+      "addressLocality": "Kongsberg",
+      "postalCode": "3616",
       "addressCountry": "NO"
     },
     "geo": {
@@ -91,8 +91,8 @@ export const structuredDataTemplates = {
       }
     ],
     "sameAs": [
-      "https://www.facebook.com/ddautocenter",
-      "https://www.instagram.com/ddautocenter"
+      "https://www.facebook.com/stoll.esport",
+      "https://www.instagram.com/stoll.esport"
     ],
     "priceRange": "$$"
   },
@@ -108,13 +108,13 @@ export const structuredDataTemplates = {
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Ulsmågvegen 12",
-      "addressLocality": "Nesttun",
-      "postalCode": "5224",
+      "addressLocality": "Kongsberg",
+      "postalCode": "3616",
       "addressCountry": "NO"
     },
     "areaServed": {
       "@type": "City",
-      "name": "Bergen"
+      "name": "Kongsberg"
     },
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
@@ -155,8 +155,8 @@ export const structuredDataTemplates = {
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Ulsmågvegen 12",
-      "addressLocality": "Nesttun",
-      "postalCode": "5224",
+      "addressLocality": "Kongsberg",
+      "postalCode": "3616",
       "addressCountry": "NO"
     }
   }
@@ -167,7 +167,7 @@ export const defaultFAQs: Record<string, Array<{ question: string; answer: strin
   home: [
     {
       question: "Hvor ligger STOLL Esportsenter?",
-      answer: "STOLL Esportsenter ligger på Ulsmågvegen 12, 5224 Nesttun, like utenfor Bergen sentrum."
+      answer: "STOLL Esportsenter ligger på Den gamle kinoen, Kongsberg sentrum."
     },
     {
       question: "Hva er åpningstidene til STOLL Esportsenter?",

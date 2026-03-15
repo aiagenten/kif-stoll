@@ -36,23 +36,23 @@ INSERT INTO site_content (key, value) VALUES
   ('hero_image', ''),
   
   -- About section
-  ('about_history', '1. januar 2017 åpnet DD Auto Center dørene for første gang. Med vår kompetanse, kvalitetssikret arbeid og entusiasme innenfor bil er vårt formål og drøm å gjøre nettopp ditt bil-liv enklest mulig.'),
-  ('about_growth', 'Da DD Auto Center ble stiftet i 2017, startet vi med 2 ansatte. I dag utgjør vi totalt 7 ansatte.'),
+  ('about_history', '1. januar 2017 åpnet STOLL Esportsenter dørene i den gamle kinoen i Kongsberg. Som en del av Kongsberg Idrettsforening tilbyr vi et inkluderende og støttende miljø for alle som elsker gaming.'),
+  ('about_growth', 'STOLL har vokst fra en liten gaming-klubb til Kongsbergs fremste esportsenter med toppmoderne utstyr og et aktivt fellesskap.'),
   ('about_values', 'Vi er til stede, tilgjengelig og legger hovedvekt på service for våre kunder. Vi ønsker å tilrettelegge en enkel og smidig opplevelse til deg som kunde – til en god pris!'),
   ('about_guarantee', 'Utfører du service hos oss får du også mobilitetsgaranti som er gyldig frem til neste service. Vår mobilitetsgaranti innebærer blant annet ved uhell gratis veihjelp, gratis leiebil mm. Mobilitetsgarantien er også gjeldende for deg i hele Europa.'),
   ('about_team_image', ''),
   
   -- Contact section
   ('contact_phone', '400 80 071'),
-  ('contact_email_verksted', 'info@ddautocenter.no'),
-  ('contact_email_bilpleie', 'bilpleie@ddautocenter.no'),
-  ('contact_email_bilsalg', 'bilsalg@ddautocenter.no'),
-  ('contact_address', 'Ulsmågvegen 12, 5224 Nesttun'),
+  ('contact_email_verksted', 'info@stoll.gg'),
+  ('contact_email_booking', 'booking@stoll.gg'),
+  ('contact_email_sponsor', 'info@stoll.gg'),
+  ('contact_address', 'Kongsberg sentrum, 3616 Kongsberg'),
   
   -- Services section
   ('service_verksted', 'Vi tilbyr full service og vedlikehold av alle bilmerker. Våre erfarne teknikere sørger for at din bil alltid er i toppform.'),
-  ('service_bilpleie', 'Profesjonell bilpleie med keramiske belegg og lakkforsegling. Vi gir bilen din den behandlingen den fortjener.'),
-  ('service_bilsalg', 'Vi kjøper og selger kvalitetsbiler. Ta kontakt for verdivurdering eller se vårt utvalg av bruktbiler.'),
+  ('service_gaming', 'Toppmoderne gaming-PCer med 144Hz skjermer, mekaniske tastatur og racing-mus. Alt du trenger for å game på høyeste nivå.'),
+  ('service_events', 'Turneringer, LAN-parties og arrangementer for alle nivåer. Fra nybegynner til proff.'),
   
   -- Footer/Opening hours
   ('opening_weekdays', 'Man-Fre: 08:00 - 16:00'),
@@ -60,8 +60,8 @@ INSERT INTO site_content (key, value) VALUES
   ('opening_sunday', 'Søndag: Stengt'),
   
   -- Social media
-  ('social_facebook', 'https://www.facebook.com/ddautocenter'),
-  ('social_instagram', 'https://www.instagram.com/ddautocenter')
+  ('social_facebook', 'https://www.facebook.com/stoll.esport'),
+  ('social_instagram', 'https://www.instagram.com/stoll.esport')
 ON CONFLICT (key) DO NOTHING;
 
 -- Function to update timestamp on site_content changes

@@ -336,12 +336,12 @@ export async function deleteImage(url: string): Promise<boolean> {
 export const defaultContent: Record<string, string> = {
   // Hero
   hero_title: 'NORGES BESTE ESPORTSENTER!',
-  hero_subtitle: 'STOLL Esportsenter er Bergens fremste arena for gaming og esport. Konkurrér, tren og opplev det beste innen esport i moderne omgivelser.',
+  hero_subtitle: 'STOLL Esportsenter er Kongsbergs fremste arena for gaming og esport. Konkurrér, tren og opplev det beste innen esport i moderne omgivelser.',
   hero_image: '',
   hero_video: '',
 
   // About
-  about_history: 'STOLL Esportsenter åpnet dørene som Bergens første dedikerte esportsenter. Vi har bygget et fellesskap av gamere, konkurrenter og entusiaster som deler lidenskapen for esport.',
+  about_history: 'STOLL Esportsenter åpnet dørene som Kongsbergs første dedikerte esportsenter. Vi har bygget et fellesskap av gamere, konkurrenter og entusiaster som deler lidenskapen for esport.',
   about_growth: 'Fra en liten start har vi vokst til å bli regionens ledende esportsenter med hundrevis av medlemmer og ukentlige arrangementer.',
   about_values: 'Vi tror på inkludering, fair play og lidenskap. Enten du er nybegynner eller proff – det er plass til deg på STOLL.',
   about_guarantee: 'Som medlem hos STOLL får du tilgang til alle fasiliteter, rabatt på arrangementer og en eksklusiv arena tilpasset esport på høyt nivå.',
@@ -352,7 +352,7 @@ export const defaultContent: Record<string, string> = {
   contact_email_verksted: 'info@stoll.gg',
   contact_email_booking: 'booking@stoll.gg',
   contact_email_sponsorer: 'sponsorer@stoll.gg',
-  contact_address: 'Bergen, Norge',
+  contact_address: 'Kongsberg, Norge',
 
   // Services (esport-tilpasset)
   service_verksted: 'Profesjonelle gaming-rigger med de nyeste PC-ene, skjermene og periferiene. Spill på utstyr som gir deg den beste opplevelsen.',

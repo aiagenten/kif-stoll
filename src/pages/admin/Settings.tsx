@@ -17,13 +17,13 @@ interface SettingsData {
 
 const defaultSettings: SettingsData = {
   siteTitle: 'STOLL Esportsenter',
-  siteDescription: 'Bergens fremste arena for gaming og esport',
-  contactEmail: 'info@ddautocenter.no',
+  siteDescription: 'Kongsbergs fremste arena for gaming og esport',
+  contactEmail: 'info@stoll.gg',
   phone: '400 80 071',
-  address: 'Ulsmågvegen 12, 5224 Nesttun',
+  address: 'Kirkegata 2, 3616 Kongsberg',
   googleMapsKey: '',
-  facebookUrl: 'https://facebook.com/ddautocenter',
-  instagramUrl: 'https://instagram.com/ddautocenter',
+  facebookUrl: 'https://facebook.com/stoll.esport',
+  instagramUrl: 'https://instagram.com/stoll.esport',
   emailNotifications: true,
   maintenanceMode: false,
 }

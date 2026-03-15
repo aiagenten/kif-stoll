@@ -38,8 +38,8 @@ const platformOptions = [
 
 const mockAIContent: Record<string, string[]> = {
   general: [
-    '🎮 Hei, STOLL-familie! Vi er klare for en ny uke med gaming og fellesskap. Kom innom og bli med på moroa! #STOLL #Esport #Bergen',
-    '✨ Det skjer mye spennende på STOLL disse dagene! Hold deg oppdatert og møt opp for de beste gaming-opplevelsene i Bergen. 🎮',
+    '🎮 Hei, STOLL-familie! Vi er klare for en ny uke med gaming og fellesskap. Kom innom og bli med på moroa! #STOLL #Esport #Kongsberg',
+    '✨ Det skjer mye spennende på STOLL disse dagene! Hold deg oppdatert og møt opp for de beste gaming-opplevelsene i Kongsberg. 🎮',
   ],
   event_reminder: [
     '⚡ PÅMINNELSE: Husk at vi har turnering i helgen! Registrer deg nå og vis hva du er god for. Plassene er begrenset! 🏆 #STOLL #Turnering',

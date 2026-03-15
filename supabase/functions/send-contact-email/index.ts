@@ -1,92 +1,73 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
-const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
-
-interface ContactForm {
+interface ContactData {
   name: string
   email: string
-  phone: string
-  reg_number?: string
-  service: 'verksted' | 'bilpleie' | 'bilsalg'
+  phone?: string
   message: string
+  service: 'generelt' | 'booking' | 'sponsor'
 }
 
 const serviceEmails: Record<string, string> = {
-  verksted: 'info@ddautocenter.no',
-  bilpleie: 'bilpleie@ddautocenter.no',
-  bilsalg: 'bilsalg@ddautocenter.no',
+  generelt: 'info@stoll.gg',
+  booking: 'booking@stoll.gg',
+  sponsor: 'info@stoll.gg',
 }
 
 const serviceNames: Record<string, string> = {
-  verksted: 'Bilverksted',
-  bilpleie: 'Bilpleie',
-  bilsalg: 'Bilsalg',
+  generelt: 'Generell henvendelse',
+  booking: 'Booking',
+  sponsor: 'Sponsor',
 }
 
 serve(async (req) => {
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   }
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
-    const data: ContactForm = await req.json()
-    
-    const toEmail = serviceEmails[data.service] || 'info@ddautocenter.no'
+    const data: ContactData = await req.json()
+    const toEmail = serviceEmails[data.service] || 'info@stoll.gg'
     const serviceName = serviceNames[data.service] || data.service
 
-    const htmlBody = `
-      <h2>Ny henvendelse fra DD Auto Center</h2>
-      <p><strong>Tjeneste:</strong> ${serviceName}</p>
+    const resendKey = Deno.env.get('RESEND_API_KEY')
+    if (!resendKey) throw new Error('Missing RESEND_API_KEY')
+
+    const emailHtml = `
+      <h2>Ny henvendelse - ${serviceName}</h2>
       <p><strong>Navn:</strong> ${data.name}</p>
-      <p><strong>E-post:</strong> <a href="mailto:${data.email}">${data.email}</a></p>
-      <p><strong>Telefon:</strong> <a href="tel:${data.phone}">${data.phone}</a></p>
-      ${data.reg_number ? `<p><strong>Reg.nr:</strong> ${data.reg_number}</p>` : ''}
-      <hr>
+      <p><strong>E-post:</strong> ${data.email}</p>
+      ${data.phone ? `<p><strong>Telefon:</strong> ${data.phone}</p>` : ''}
       <p><strong>Melding:</strong></p>
-      <p>${data.message.replace(/\n/g, '<br>')}</p>
+      <p>${data.message}</p>
       <hr>
       <p style="color: #666; font-size: 12px;">
-        Sendt fra kontaktskjema på ddautocenter.no
+        Sendt fra kontaktskjema på stoll.gg
       </p>
     `
 
-    const res = await fetch('https://api.resend.com/emails', {
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${resendKey}` },
       body: JSON.stringify({
-        from: 'DD Auto Center <noreply@ddautocenter.no>',
-        to: [toEmail],
+        from: 'STOLL Esportsenter <noreply@stoll.gg>',
+        to: toEmail,
+        subject: `[STOLL] ${serviceName}: ${data.name}`,
+        html: emailHtml,
         reply_to: data.email,
-        subject: `[${serviceName}] Henvendelse fra ${data.name}`,
-        html: htmlBody,
       }),
     })
 
-    const result = await res.json()
-
-    if (!res.ok) {
-      console.error('Resend error:', result)
-      throw new Error(result.message || 'Failed to send email')
-    }
-
-    return new Response(
-      JSON.stringify({ success: true, id: result.id }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    const result = await response.json()
+    return new Response(JSON.stringify({ success: true, id: result.id }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
   } catch (error) {
-    console.error('Error:', error)
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: corsHeaders,
+    })
   }
 })

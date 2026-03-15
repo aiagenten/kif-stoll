@@ -1,4 +1,4 @@
--- DD Auto Center Database Schema
+-- STOLL Esportsenter Database Schema
 
 -- Contact form submissions
 CREATE TABLE contact_submissions (
@@ -8,7 +8,7 @@ CREATE TABLE contact_submissions (
   email TEXT NOT NULL,
   phone TEXT NOT NULL,
   reg_number TEXT,
-  service TEXT NOT NULL CHECK (service IN ('verksted', 'bilpleie', 'bilsalg')),
+  service TEXT NOT NULL CHECK (service IN ('generelt', 'booking', 'sponsor')),
   message TEXT NOT NULL,
   status TEXT DEFAULT 'new' CHECK (status IN ('new', 'read', 'replied'))
 );
@@ -23,7 +23,7 @@ CREATE TABLE reviews (
   visible BOOLEAN DEFAULT true
 );
 
--- Bilpleie packages
+-- Membership packages
 CREATE TABLE packages (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
@@ -81,9 +81,9 @@ CREATE POLICY "Service role full access to site_content" ON site_content
 
 -- Insert default reviews from PROJECT.md
 INSERT INTO reviews (author, rating, text, visible) VALUES
-  ('Bergen Elbil AS', 5, 'Veldig god service! Leverer høy kvalitet, anbefales.', true),
+  ('KIF Gaming', 5, 'Fantastisk esportsenter! Toppmoderne utstyr og god stemning.', true),
   ('Kai Erik Holmefjord', 5, 'Fikk nødhjelp fra dette firmaet, da jeg hadde problemer med bilen med gangavstand til Fjøsangerveien. Veldig hjelpsom og god service, da jeg fikk hjelp i øyeblikket, så jeg fikk jobbe i tide.', true),
-  ('Johannes Terast', 5, 'Fra det første øyeblikket du går inn i DD Auto Center, vil du føle mye kjærlighet og lidenskap om biler. Teamet vil ta vare på bilen din med profesjonell service og nyttige råd. Disse gutta rocker rett og slett!', true);
+  ('Johannes Terast', 5, 'STOLL er det beste stedet for gaming i Kongsberg! Bra PCer, god internett og et fantastisk fellesskap. Anbefales!', true);
 
 -- Insert default packages from PROJECT.md
 INSERT INTO packages (name, tier, description, features, durability, checkup_price, popular, order_index) VALUES

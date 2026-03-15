@@ -1,187 +1,76 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
-
-interface GenerateRequest {
-  pageKey: string
-  type: 'all' | 'meta' | 'faq' | 'structured'
-  currentData?: Record<string, unknown>
-}
-
-const BUSINESS_CONTEXT = `
-DD Auto Center er et profesjonelt bilverksted, bilpleiesenter og bruktbilforhandler i Bergen, Norge.
-Beliggenhet: Ulsmågvegen 12, 5224 Nesttun
-Telefon: 400 80 071
-E-post: info@ddautocenter.no
+const STOLL_CONTEXT = `
+STOLL Esportsenter er Kongsbergs fremste arena for gaming og esport.
+Del av Kongsberg Idrettsforening (KIF). Holder til i den gamle kinoen i Kongsberg sentrum.
+Beliggenhet: Kongsberg sentrum, 3616 Kongsberg
+E-post: info@stoll.gg
+Nettside: stoll.gg
 
 Tjenester:
-1. Verksted: EU-kontroll, service, reparasjoner, diagnostikk for alle bilmerker
-2. Bilpleie: Keramisk belegg, polering, lakkforsegling, innvendig rens
-3. Bilsalg: Kjøp og salg av kvalitets bruktbiler
+1. Gaming-fasiliteter: Toppmoderne PCer, konsoller og VR-utstyr
+2. Turneringer: CS2, League of Legends, Valorant, Rocket League, FIFA
+3. Medlemskap: Daglig, ukentlig og månedlig tilgang
+4. Coaching: Profesjonell esport-trening
+5. Events: Bedriftsarrangementer, bursdager, LAN-parties
+6. Sponsorpakker: Synlighet i Kongsbergs esportmiljø
 
-Åpningstider: Man-Fre 08:00-16:00
-
-Viktige salgsargumenter:
-- Erfarne teknikere med mange års kompetanse
-- Kvalitetssikret arbeid
-- Mobilitetsgaranti inkludert ved service (veihjelp, leiebil i hele Europa)
-- Personlig service og god kundebehandling
-- Konkurransedyktige priser
+Åpningstider: Se stoll.gg for oppdaterte tider
 `
 
 const PAGE_CONTEXTS: Record<string, string> = {
-  home: 'Forsiden som presenterer hele DD Auto Center med alle tjenester.',
-  verksted: 'Verkstedtjenester: EU-kontroll, service, reparasjoner, diagnostikk.',
-  bilpleie: 'Profesjonell bilpleie med keramisk belegg, polering og lakkforsegling.',
-  bilsalg: 'Bruktbilsalg og innbytte av biler.'
+  home: 'Forsiden som presenterer STOLL Esportsenter med alle tjenester.',
+  events: 'Events og turneringer ved STOLL Esportsenter.',
+  pakker: 'Medlemspakker og priser for gaming ved STOLL.',
+  sponsorer: 'Sponsormuligheter og partnere ved STOLL Esportsenter.'
 }
 
 serve(async (req) => {
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   }
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY')
-    
-    if (!OPENAI_API_KEY) {
-      return new Response(
-        JSON.stringify({ 
-          error: 'OPENAI_API_KEY ikke konfigurert',
-          message: 'Legg til OPENAI_API_KEY i Supabase Edge Function secrets'
-        }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      )
-    }
+    const { pageKey, currentMeta } = await req.json()
+    const openaiKey = Deno.env.get('OPENAI_API_KEY')
+    if (!openaiKey) throw new Error('Missing OPENAI_API_KEY')
 
-    const { pageKey, type, currentData } = await req.json() as GenerateRequest
+    const pageContext = PAGE_CONTEXTS[pageKey] || 'En side på STOLL Esportsenter.'
+    let systemPrompt = `Du er en SEO-ekspert som skriver for norske bedrifter. Svar alltid på norsk. Vær konkret og bruk lokale søkeord for Kongsberg-området.`
 
-    const pageContext = PAGE_CONTEXTS[pageKey] || 'Generell side'
-    
-    let prompt = ''
-    let systemPrompt = `Du er en SEO-ekspert som skriver for norske bedrifter. Svar alltid på norsk. Vær konkret og bruk lokale søkeord for Bergen-området.`
+    const userPrompt = `
+Generer SEO-metadata for denne siden:
+Side: ${pageKey}
+Kontekst: ${pageContext}
+Bedriftsinfo: ${STOLL_CONTEXT}
+${currentMeta ? `Nåværende metadata: ${JSON.stringify(currentMeta)}` : ''}
 
-    if (type === 'meta' || type === 'all') {
-      prompt += `
-Lag optimale meta tags for denne siden:
-Side: ${pageKey} - ${pageContext}
+Returner JSON med disse feltene:
+1. meta_title: Maks 60 tegn, inkluder hovednøkkelord og "Kongsberg"
+2. meta_description: Maks 160 tegn, overbevisende med CTA
+3. og_title: Optimalisert for sosiale medier
+4. og_description: Kort og engasjerende for deling
+5. keywords: Kommaseparerte søkeord (8-12 stk)
+6. structured_data: Schema.org JSON-LD
 
-${BUSINESS_CONTEXT}
+Svar KUN med gyldig JSON, ingen annen tekst.`
 
-Generer:
-1. meta_title: Maks 60 tegn, inkluder hovednøkkelord og "Bergen" eller "Nesttun"
-2. meta_description: Maks 160 tegn, call-to-action, inkluder telefonnummer eller oppfordring
-3. keywords: 5-8 relevante søkeord som array
-
-Svar i JSON-format:
-{
-  "meta_title": "...",
-  "meta_description": "...",
-  "keywords": ["...", "..."]
-}
-`
-    }
-
-    if (type === 'faq' || type === 'all') {
-      prompt += `
-Lag FAQ-schema for voice search og "People Also Ask":
-Side: ${pageKey} - ${pageContext}
-
-${BUSINESS_CONTEXT}
-
-Generer 5-6 vanlige spørsmål kunder stiller, med korte, konsise svar (maks 2-3 setninger per svar).
-Fokuser på:
-- Lokale søk ("hvor ligger", "åpningstider")
-- Praktiske spørsmål ("hvor lang tid tar", "hva koster")
-- Sammenligning ("forskjellen mellom")
-
-Svar i JSON-format:
-{
-  "faq_schema": [
-    {"question": "...", "answer": "..."},
-    ...
-  ]
-}
-`
-    }
-
-    if (type === 'structured' || type === 'all') {
-      const schemaType = pageKey === 'bilsalg' ? 'AutoDealer' : pageKey === 'verksted' ? 'AutoRepair' : 'LocalBusiness'
-      
-      prompt += `
-Lag Schema.org structured data (JSON-LD) for:
-Side: ${pageKey} - ${pageContext}
-Schema type: ${schemaType}
-
-${BUSINESS_CONTEXT}
-
-Generer komplett, gyldig JSON-LD med alle relevante felt.
-Inkluder: address, telephone, openingHours, geo, areaServed, hasOfferCatalog (for tjenester).
-
-Svar i JSON-format:
-{
-  "structured_data": { "@context": "https://schema.org", ... }
-}
-`
-    }
-
-    // Call OpenAI
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openaiKey}` },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: prompt }
-        ],
+        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
         temperature: 0.7,
         response_format: { type: 'json_object' }
       })
     })
-
-    if (!openaiResponse.ok) {
-      const error = await openaiResponse.text()
-      throw new Error(`OpenAI API error: ${error}`)
-    }
-
-    const openaiData = await openaiResponse.json()
-    const generatedContent = JSON.parse(openaiData.choices[0].message.content)
-
-    return new Response(
-      JSON.stringify({ 
-        success: true,
-        data: generatedContent,
-        pageKey,
-        type
-      }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
-    )
-
+    const result = await response.json()
+    const seoData = JSON.parse(result.choices[0].message.content)
+    return new Response(JSON.stringify(seoData), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   } catch (error) {
-    console.error('Error:', error)
-    return new Response(
-      JSON.stringify({ 
-        error: error.message || 'Generering feilet',
-        details: String(error)
-      }),
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
-    )
+    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders })
   }
 })

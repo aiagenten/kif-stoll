@@ -7,7 +7,7 @@ const stats = [
   { icon: Trophy, value: '2020', label: 'Etablert' },
   { icon: Users, value: '500+', label: 'Medlemmer' },
   { icon: Zap, value: '30+', label: 'Gaming-rigger' },
-  { icon: Globe, value: 'Bergen', label: 'Lokasjon' },
+  { icon: Globe, value: 'Kongsberg', label: 'Lokasjon' },
 ]
 
 export default function AboutUs() {
