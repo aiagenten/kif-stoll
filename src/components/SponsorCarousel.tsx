@@ -79,11 +79,10 @@ function SponsorLogo({ sponsor }: { sponsor: Sponsor }) {
           alt={sponsor.name}
           className="max-h-10 max-w-[100px] object-contain transition-all duration-300"
           style={{
-            filter: 'brightness(0) invert(1)',
-            opacity: 0.7,
+            opacity: 0.8,
           }}
           onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
-          onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}
+          onMouseLeave={e => (e.currentTarget.style.opacity = '0.8')}
         />
       ) : (
         <span
