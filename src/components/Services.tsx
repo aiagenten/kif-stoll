@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { Monitor, Sword, Trophy, Users, Calendar, Zap } from 'lucide-react'
+import { Monitor, Users, Calendar, Zap } from 'lucide-react'
+import { ControllerIcon, SwordIcon, TrophyIcon } from './icons/GamingIcons'
 import { useContent } from '../contexts/ContentContext'
 
 export default function Services() {
@@ -8,7 +9,7 @@ export default function Services() {
   const services = [
     {
       id: 'fasiliteter',
-      icon: Monitor,
+      icon: ControllerIcon,
       title: 'Gaming-fasiliteter',
       description: content['service_gaming'] || 'Profesjonelle gaming-rigger med de nyeste PC-ene, skjermene og periferiene.',
       color: 'var(--color-primary)',
@@ -16,7 +17,7 @@ export default function Services() {
     },
     {
       id: 'treninger',
-      icon: Sword,
+      icon: SwordIcon,
       title: 'Treninger & Coaching',
       description: content['service_coaching'] || 'Ukentlige treninger, coaching-sesjoner og scrim-muligheter for lag og individuelle spillere.',
       color: 'var(--color-accent)',
@@ -24,7 +25,7 @@ export default function Services() {
     },
     {
       id: 'turneringer',
-      icon: Trophy,
+      icon: TrophyIcon,
       title: 'Turneringer',
       description: content['service_turneringer'] || 'Fra lokale turneringer til regionale og nasjonale mesterskap. STOLL er arenaen der drømmene lever.',
       color: '#10b981',
@@ -84,8 +85,8 @@ export default function Services() {
                 <p style={{ color: 'var(--color-text-muted)' }} className="leading-relaxed">
                   {service.description}
                 </p>
-                <div className="mt-6 pt-6 border-t border-purple-900/30">
-                  <Icon size={20} style={{ color: service.color }} className="mx-auto" />
+                <div className="mt-6 pt-6 border-t border-purple-900/30" style={{ color: service.color }}>
+                  <Icon size={20} className="mx-auto" />
                 </div>
               </motion.div>
             )

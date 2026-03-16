@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Phone, Facebook, Instagram, Gamepad2 } from 'lucide-react'
+import { Menu, X, Phone, Facebook, Instagram } from 'lucide-react'
 import { useContent } from '../contexts/ContentContext'
 
 const navLinks = [
@@ -59,21 +59,19 @@ export default function Navbar({ }: NavbarProps) {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <motion.div className="flex-shrink-0" whileHover={{ scale: 1.05 }}>
-            <a href={isHomePage ? '#hjem' : '/'} className="flex items-center space-x-2 text-2xl font-black tracking-wide">
-              <Gamepad2 size={28} style={{ color: 'var(--color-accent)' }} />
-              <span style={{ color: 'var(--color-accent)' }}>STOLL</span>
-              <span style={{ color: 'var(--color-text)', fontWeight: 400, fontSize: '0.85em', opacity: 0.7 }}>ESPORTSENTER</span>
+            <a href={isHomePage ? '#hjem' : '/'} className="flex items-center space-x-3 text-2xl font-black tracking-wide">
+              <img src="/images/stoll/logo-header.png" alt="STOLL Esportsenter" className="h-10 w-auto" />
             </a>
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6 lg:space-x-8 xl:space-x-10">
             {navLinks.map((link) =>
               'isRoute' in link && link.isRoute ? (
                 <Link
                   key={link.name}
                   to={link.href}
-                  className="nav-link transition-colors font-semibold text-sm uppercase tracking-wider"
+                  className="nav-link transition-colors font-medium text-[13px] uppercase tracking-widest py-2 px-1 hover:text-white"
                   style={{ color: 'var(--color-text-muted)' }}
                 >
                   {link.name}
@@ -82,7 +80,7 @@ export default function Navbar({ }: NavbarProps) {
                 <motion.button
                   key={link.name}
                   onClick={() => scrollToSection(link.href)}
-                  className="nav-link transition-colors font-semibold text-sm uppercase tracking-wider"
+                  className="nav-link transition-colors font-medium text-[13px] uppercase tracking-widest py-2 px-1 hover:text-white"
                   style={{ color: 'var(--color-text-muted)' }}
                   whileHover={{ y: -2 }}
                 >

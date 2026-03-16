@@ -16,14 +16,14 @@ export default function SponsorCarousel() {
   const doubled = [...sponsors, ...sponsors]
 
   return (
-    <section className="py-12 overflow-hidden" style={{ background: 'var(--color-dark)', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
+    <section className="py-12 overflow-hidden" style={{ background: '#f5f5f7', borderTop: '1px solid #e0e0e0', borderBottom: '1px solid #e0e0e0' }}>
       <div className="max-w-7xl mx-auto px-4 mb-6">
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           className="text-center text-xs font-bold uppercase tracking-widest"
-          style={{ color: 'var(--color-text-muted)' }}
+          style={{ color: '#666' }}
         >
           Våre sponsorer
         </motion.p>
@@ -32,9 +32,9 @@ export default function SponsorCarousel() {
       <div className="relative">
         {/* Left/right fade */}
         <div className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{ background: `linear-gradient(to right, var(--color-dark), transparent)` }} />
+          style={{ background: `linear-gradient(to right, #f5f5f7, transparent)` }} />
         <div className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{ background: `linear-gradient(to left, var(--color-dark), transparent)` }} />
+          style={{ background: `linear-gradient(to left, #f5f5f7, transparent)` }} />
 
         <div className="flex animate-scroll-left" style={{ width: 'max-content' }}>
           {doubled.map((sponsor, i) => (
@@ -67,8 +67,8 @@ function SponsorLogo({ sponsor }: { sponsor: Sponsor }) {
     <div
       className="flex items-center justify-center px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
       style={{
-        background: 'rgba(255,255,255,0.05)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: '#fff',
+        border: '1px solid #e0e0e0',
         minWidth: '120px',
         height: '60px',
       }}
@@ -87,7 +87,7 @@ function SponsorLogo({ sponsor }: { sponsor: Sponsor }) {
       ) : (
         <span
           className="text-sm font-bold uppercase tracking-wider"
-          style={{ color: 'var(--color-text-muted)' }}
+          style={{ color: '#333' }}
         >
           {sponsor.name}
         </span>
