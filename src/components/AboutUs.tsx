@@ -75,7 +75,7 @@ export default function AboutUs() {
                 className="w-full h-48 rounded-2xl flex items-center justify-center"
                 style={{ background: 'var(--color-surface)', border: '2px dashed var(--color-border)' }}
               >
-                <span style={{ color: 'var(--color-text-muted)' }} className="text-4xl">🎮</span>
+                <span style={{ color: 'var(--color-text-muted)' }} className="text-4xl"></span>
               </div>
             )}
 

@@ -13,7 +13,6 @@ export default function Services() {
       title: 'Gaming-fasiliteter',
       description: content['service_gaming'] || 'Profesjonelle gaming-rigger med de nyeste PC-ene, skjermene og periferiene.',
       color: 'var(--color-primary)',
-      emoji: '🖥️',
     },
     {
       id: 'treninger',
@@ -21,7 +20,6 @@ export default function Services() {
       title: 'Treninger & Coaching',
       description: content['service_coaching'] || 'Ukentlige treninger, coaching-sesjoner og scrim-muligheter for lag og individuelle spillere.',
       color: 'var(--color-accent)',
-      emoji: '⚔️',
     },
     {
       id: 'turneringer',
@@ -29,7 +27,6 @@ export default function Services() {
       title: 'Turneringer',
       description: content['service_turneringer'] || 'Fra lokale turneringer til regionale og nasjonale mesterskap. STOLL er arenaen der drømmene lever.',
       color: '#10b981',
-      emoji: '🏆',
     },
   ]
 
@@ -76,18 +73,15 @@ export default function Services() {
                 className="card-theme rounded-2xl p-8 text-center group cursor-default"
               >
                 <div
-                  className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6 text-3xl"
-                  style={{ background: `${service.color}22`, border: `2px solid ${service.color}44` }}
+                  className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6"
+                  style={{ background: `${service.color}22`, border: `2px solid ${service.color}44`, color: service.color }}
                 >
-                  {service.emoji}
+                  <Icon size={32} />
                 </div>
                 <h3 className="text-xl font-black mb-3 text-white">{service.title}</h3>
                 <p style={{ color: 'var(--color-text-muted)' }} className="leading-relaxed">
                   {service.description}
                 </p>
-                <div className="mt-6 pt-6 border-t border-purple-900/30" style={{ color: service.color }}>
-                  <Icon size={20} className="mx-auto" />
-                </div>
               </motion.div>
             )
           })}

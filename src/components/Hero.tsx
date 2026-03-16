@@ -61,9 +61,7 @@ export default function Hero() {
             color: 'var(--color-accent)',
           }}
         >
-          <span>⚡</span>
           <span>Kongsberg's #1 Esportsenter</span>
-          <span>⚡</span>
         </motion.div>
 
         {/* Title */}
@@ -104,7 +102,7 @@ export default function Hero() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            🎮 Se Kommende Events
+            Se Kommende Events
           </motion.a>
           <motion.a
             href="#kontakt"

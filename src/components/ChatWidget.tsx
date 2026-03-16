@@ -124,9 +124,7 @@ export default function ChatWidget() {
                 <Bot size={18} className="text-white" />
                 <div>
                   <p className="text-sm font-black text-white">STOLL AI</p>
-                  <p className="text-xs text-white/70">
-                    {quotaExceeded ? 'Kvote nådd' : `${MONTHLY_QUOTA - monthlyCount} meldinger igjen`}
-                  </p>
+                  <p className="text-xs text-white/70">Spør meg om hva som helst!</p>
                 </div>
               </div>
               <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition-colors">
