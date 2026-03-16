@@ -21,6 +21,7 @@ import {
   Users,
   Gamepad2,
   Share2,
+  Bot,
   X,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";

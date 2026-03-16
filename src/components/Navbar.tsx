@@ -11,7 +11,7 @@ const navLinks = [
   { name: 'Turneringer', href: '#turneringer' },
   { name: 'Events', href: '#events' },
   { name: 'Om Oss', href: '#om-oss' },
-  { name: 'Blogg', href: '/blogg', isRoute: true },
+  { name: 'Nyheter', href: '/nyheter', isRoute: true },
   { name: 'Kontakt', href: '#kontakt' },
 ]
 
@@ -67,7 +67,7 @@ export default function Navbar({ }: NavbarProps) {
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) =>
               'isRoute' in link && link.isRoute ? (
                 <Link

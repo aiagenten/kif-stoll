@@ -1,10 +1,12 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { ContentProvider } from './contexts/ContentContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ChatWidget from './components/ChatWidget'
+import CookieBanner from './components/CookieBanner'
+import GamingBackground from './components/GamingBackground'
 import Home from './pages/Home'
 import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
@@ -24,15 +26,19 @@ import AdminSponsors from './pages/admin/Sponsors'
 import AdminSoMe from './pages/admin/SoMe'
 import AdminSoMeEditor from './pages/admin/SoMeEditor'
 import AdminSoMeSettings from './pages/admin/SoMeSettings'
+import AdminChatbot from './pages/admin/Chatbot'
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen" style={{ background: 'var(--color-bg)', color: 'var(--color-text)' }}>
-      <Navbar />
-      {children}
-      <Footer />
-      <ChatWidget />
-    </div>
+    <GamingBackground>
+      <div className="min-h-screen" style={{ background: 'var(--color-bg)', color: 'var(--color-text)' }}>
+        <Navbar />
+        {children}
+        <Footer />
+        <ChatWidget />
+        <CookieBanner />
+      </div>
+    </GamingBackground>
   )
 }
 
@@ -63,11 +69,18 @@ function App() {
                 <Route path="some/settings" element={<AdminSoMeSettings />} />
               </Route>
 
-              {/* Blog */}
-              <Route path="/blogg" element={
+              {/* Chatbot admin */}
+              <Route path="chatbot" element={<AdminChatbot />} />
+
+              {/* Blog / Nyheter */}
+              <Route path="/blogg" element={<Navigate to="/nyheter" replace />} />
+              <Route path="/blogg/:slug" element={
+                <PublicLayout><BlogPost /></PublicLayout>
+              } />
+              <Route path="/nyheter" element={
                 <PublicLayout><Blog /></PublicLayout>
               } />
-              <Route path="/blogg/:slug" element={
+              <Route path="/nyheter/:slug" element={
                 <PublicLayout><BlogPost /></PublicLayout>
               } />
 
