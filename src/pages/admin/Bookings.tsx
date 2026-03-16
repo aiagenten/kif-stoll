@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { Check, X, Clock, Mail, Phone, Users, Calendar, AlertCircle } from 'lucide-react'
-import { getBookings, updateBookingStatus } from '../../lib/supabase'
+import { getBookings, updateBookingStatus } from '@/lib/supabase'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 interface BookingWithEvent {
   id: string
@@ -17,9 +19,9 @@ interface BookingWithEvent {
 }
 
 const statusConfig = {
-  pending: { label: 'Venter', color: 'bg-yellow-100 text-yellow-800', icon: Clock },
-  confirmed: { label: 'Bekreftet', color: 'bg-green-100 text-green-800', icon: Check },
-  cancelled: { label: 'Avvist', color: 'bg-red-100 text-red-800', icon: X },
+  pending: { label: 'Venter', color: 'bg-yellow-100 text-yellow-800', icon: Clock, badge: 'warning' as const },
+  confirmed: { label: 'Bekreftet', color: 'bg-green-100 text-green-800', icon: Check, badge: 'success' as const },
+  cancelled: { label: 'Avvist', color: 'bg-red-100 text-red-800', icon: X, badge: 'destructive' as const },
 }
 
 export default function AdminBookings() {
@@ -53,11 +55,18 @@ export default function AdminBookings() {
     }
   }
 
-  const filteredBookings = filter === 'all' 
-    ? bookings 
+  const filteredBookings = filter === 'all'
+    ? bookings
     : bookings.filter(b => b.status === filter)
 
   const pendingCount = bookings.filter(b => b.status === 'pending').length
+
+  const filterLabels: Record<string, string> = {
+    all: 'Alle',
+    pending: statusConfig.pending.label,
+    confirmed: statusConfig.confirmed.label,
+    cancelled: statusConfig.cancelled.label,
+  }
 
   return (
     <div className="p-6">
@@ -67,32 +76,29 @@ export default function AdminBookings() {
           <p className="text-gray-600">Administrer innkommende bookinger</p>
         </div>
         {pendingCount > 0 && (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-yellow-100 text-yellow-800 rounded-lg text-sm font-medium">
+          <Badge variant="warning" className="flex items-center gap-2 px-3 py-1.5 text-sm">
             <AlertCircle size={16} />
             {pendingCount} venter på svar
-          </div>
+          </Badge>
         )}
       </div>
 
       {/* Filter tabs */}
       <div className="flex gap-2 mb-6">
         {(['all', 'pending', 'confirmed', 'cancelled'] as const).map(status => (
-          <button
+          <Button
             key={status}
+            variant={filter === status ? 'default' : 'secondary'}
+            size="sm"
             onClick={() => setFilter(status)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filter === status
-                ? 'bg-purple-600 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
           >
-            {status === 'all' ? 'Alle' : statusConfig[status].label}
+            {filterLabels[status]}
             {status !== 'all' && (
               <span className="ml-1.5 opacity-70">
                 ({bookings.filter(b => b.status === status).length})
               </span>
             )}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -111,24 +117,19 @@ export default function AdminBookings() {
             const config = statusConfig[booking.status]
             const StatusIcon = config.icon
             return (
-              <motion.div
-                key={booking.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-xl border p-4"
-              >
+              <Card key={booking.id} className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="font-semibold text-gray-900">{booking.name}</h3>
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${config.color}`}>
+                      <Badge variant={config.badge} className="gap-1">
                         <StatusIcon size={12} />
                         {config.label}
-                      </span>
+                      </Badge>
                     </div>
 
                     {booking.events && (
-                      <div className="text-sm text-purple-600 font-medium mb-2">
+                      <div className="text-sm text-[#5F4E9D] font-medium mb-2">
                         📅 {booking.events.title} — {booking.events.date}
                       </div>
                     )}
@@ -160,22 +161,24 @@ export default function AdminBookings() {
 
                   {booking.status === 'pending' && (
                     <div className="flex flex-col gap-2">
-                      <button
+                      <Button
+                        size="sm"
+                        className="bg-green-600 hover:bg-green-700 text-white"
                         onClick={() => handleStatusChange(booking.id, 'confirmed')}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
                       >
                         <Check size={14} /> Godkjenn
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
                         onClick={() => handleStatusChange(booking.id, 'cancelled')}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700"
                       >
                         <X size={14} /> Avvis
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </Card>
             )
           })}
         </div>

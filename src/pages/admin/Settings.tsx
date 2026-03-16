@@ -1,6 +1,11 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { Save, Shield, Mail, Bell, Globe, Database, RefreshCw } from 'lucide-react'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 
 interface SettingsData {
   siteTitle: string
@@ -51,223 +56,214 @@ export default function AdminSettings() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-white">Innstillinger</h2>
+          <h2 className="text-xl font-bold text-gray-900">Innstillinger</h2>
           <p className="text-gray-500 text-sm">Administrer nettsideinnstillinger og integrasjoner</p>
         </div>
-        <motion.button
+        <Button
           onClick={handleSave}
           disabled={!hasChanges || saving}
-          className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all ${
-            hasChanges 
-              ? 'gradient-gold text-[#1a1a1a]' 
-              : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-          }`}
-          whileHover={hasChanges ? { scale: 1.05 } : {}}
-          whileTap={hasChanges ? { scale: 0.95 } : {}}
+          variant={hasChanges ? 'accent' : 'secondary'}
         >
           {saving ? (
-            <RefreshCw className="w-5 h-5 animate-spin" />
+            <RefreshCw className="w-4 h-4 animate-spin" />
           ) : (
-            <Save className="w-5 h-5" />
+            <Save className="w-4 h-4" />
           )}
-          <span>{saving ? 'Lagrer...' : 'Lagre'}</span>
-        </motion.button>
+          {saving ? 'Lagrer...' : 'Lagre'}
+        </Button>
       </div>
 
       {/* General Settings */}
-      <div className="glass rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center space-x-2">
-          <Globe className="w-5 h-5 text-[#c9a227]" />
-          <span>Generelt</span>
-        </h3>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-gray-400 text-sm mb-2">Sidetittel</label>
-            <input
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Globe className="w-5 h-5 text-[#5F4E9D]" />
+            Generelt
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="siteTitle">Sidetittel</Label>
+            <Input
+              id="siteTitle"
               type="text"
               value={settings.siteTitle}
               onChange={(e) => updateSetting('siteTitle', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none"
             />
           </div>
 
-          <div>
-            <label className="block text-gray-400 text-sm mb-2">Beskrivelse (SEO)</label>
-            <textarea
+          <div className="space-y-2">
+            <Label htmlFor="siteDescription">Beskrivelse (SEO)</Label>
+            <Textarea
+              id="siteDescription"
               value={settings.siteDescription}
               onChange={(e) => updateSetting('siteDescription', e.target.value)}
               rows={2}
-              className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none resize-none"
             />
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Contact Settings */}
-      <div className="glass rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center space-x-2">
-          <Mail className="w-5 h-5 text-[#c9a227]" />
-          <span>Kontaktinformasjon</span>
-        </h3>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Mail className="w-5 h-5 text-[#5F4E9D]" />
+            Kontaktinformasjon
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="contactEmail">E-post</Label>
+              <Input
+                id="contactEmail"
+                type="email"
+                value={settings.contactEmail}
+                onChange={(e) => updateSetting('contactEmail', e.target.value)}
+              />
+            </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-gray-400 text-sm mb-2">E-post</label>
-            <input
-              type="email"
-              value={settings.contactEmail}
-              onChange={(e) => updateSetting('contactEmail', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none"
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Telefon</Label>
+              <Input
+                id="phone"
+                type="text"
+                value={settings.phone}
+                onChange={(e) => updateSetting('phone', e.target.value)}
+              />
+            </div>
 
-          <div>
-            <label className="block text-gray-400 text-sm mb-2">Telefon</label>
-            <input
-              type="text"
-              value={settings.phone}
-              onChange={(e) => updateSetting('phone', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none"
-            />
+            <div className="md:col-span-2 space-y-2">
+              <Label htmlFor="address">Adresse</Label>
+              <Input
+                id="address"
+                type="text"
+                value={settings.address}
+                onChange={(e) => updateSetting('address', e.target.value)}
+              />
+            </div>
           </div>
-
-          <div className="md:col-span-2">
-            <label className="block text-gray-400 text-sm mb-2">Adresse</label>
-            <input
-              type="text"
-              value={settings.address}
-              onChange={(e) => updateSetting('address', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none"
-            />
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Social Media */}
-      <div className="glass rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center space-x-2">
-          <Globe className="w-5 h-5 text-[#c9a227]" />
-          <span>Sosiale medier</span>
-        </h3>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Globe className="w-5 h-5 text-[#5F4E9D]" />
+            Sosiale medier
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="facebookUrl">Facebook URL</Label>
+              <Input
+                id="facebookUrl"
+                type="url"
+                value={settings.facebookUrl}
+                onChange={(e) => updateSetting('facebookUrl', e.target.value)}
+                placeholder="https://facebook.com/..."
+              />
+            </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-gray-400 text-sm mb-2">Facebook URL</label>
-            <input
-              type="url"
-              value={settings.facebookUrl}
-              onChange={(e) => updateSetting('facebookUrl', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none"
-              placeholder="https://facebook.com/..."
-            />
+            <div className="space-y-2">
+              <Label htmlFor="instagramUrl">Instagram URL</Label>
+              <Input
+                id="instagramUrl"
+                type="url"
+                value={settings.instagramUrl}
+                onChange={(e) => updateSetting('instagramUrl', e.target.value)}
+                placeholder="https://instagram.com/..."
+              />
+            </div>
           </div>
-
-          <div>
-            <label className="block text-gray-400 text-sm mb-2">Instagram URL</label>
-            <input
-              type="url"
-              value={settings.instagramUrl}
-              onChange={(e) => updateSetting('instagramUrl', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none"
-              placeholder="https://instagram.com/..."
-            />
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Integrations */}
-      <div className="glass rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center space-x-2">
-          <Database className="w-5 h-5 text-[#c9a227]" />
-          <span>Integrasjoner</span>
-        </h3>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-gray-400 text-sm mb-2">Google Maps API Key</label>
-            <input
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Database className="w-5 h-5 text-[#5F4E9D]" />
+            Integrasjoner
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="googleMapsKey">Google Maps API Key</Label>
+            <Input
+              id="googleMapsKey"
               type="password"
               value={settings.googleMapsKey}
               onChange={(e) => updateSetting('googleMapsKey', e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none"
               placeholder="AIza..."
             />
-            <p className="text-gray-600 text-xs mt-1">
+            <p className="text-gray-400 text-xs">
               Brukes for egendefinert kart-styling. Valgfritt.
             </p>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Notifications */}
-      <div className="glass rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center space-x-2">
-          <Bell className="w-5 h-5 text-[#c9a227]" />
-          <span>Varsler</span>
-        </h3>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-[#2a2a2a] rounded-lg">
-            <div>
-              <div className="text-white font-medium">E-postvarsler</div>
-              <div className="text-gray-500 text-sm">Motta e-post når noen sender inn kontaktskjema</div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Bell className="w-5 h-5 text-[#5F4E9D]" />
+            Varsler
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <div className="space-y-0.5">
+              <div className="text-sm font-medium text-gray-900">E-postvarsler</div>
+              <div className="text-sm text-gray-500">Motta e-post når noen sender inn kontaktskjema</div>
             </div>
-            <button
-              onClick={() => updateSetting('emailNotifications', !settings.emailNotifications)}
-              className={`w-14 h-8 rounded-full transition-colors relative ${
-                settings.emailNotifications ? 'bg-[#c9a227]' : 'bg-gray-700'
-              }`}
-            >
-              <div 
-                className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-transform ${
-                  settings.emailNotifications ? 'left-7' : 'left-1'
-                }`} 
-              />
-            </button>
+            <Switch
+              checked={settings.emailNotifications}
+              onCheckedChange={(checked) => updateSetting('emailNotifications', checked)}
+            />
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Danger Zone */}
-      <div className="glass rounded-xl p-6 border-l-4 border-red-500">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center space-x-2">
-          <Shield className="w-5 h-5 text-red-500" />
-          <span>Faresone</span>
-        </h3>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-[#2a2a2a] rounded-lg">
-            <div>
-              <div className="text-white font-medium">Vedlikeholdsmodus</div>
-              <div className="text-gray-500 text-sm">
-                Vis en "under vedlikehold" melding til besøkende
+      <Card className="border-l-4 border-l-red-500">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Shield className="w-5 h-5 text-red-500" />
+            Faresone
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between rounded-lg border border-red-100 bg-red-50 p-4">
+            <div className="space-y-0.5">
+              <div className="text-sm font-medium text-gray-900">Vedlikeholdsmodus</div>
+              <div className="text-sm text-gray-500">
+                Vis en &quot;under vedlikehold&quot; melding til besøkende
               </div>
             </div>
-            <button
-              onClick={() => updateSetting('maintenanceMode', !settings.maintenanceMode)}
-              className={`w-14 h-8 rounded-full transition-colors relative ${
-                settings.maintenanceMode ? 'bg-red-500' : 'bg-gray-700'
-              }`}
-            >
-              <div 
-                className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-transform ${
-                  settings.maintenanceMode ? 'left-7' : 'left-1'
-                }`} 
-              />
-            </button>
+            <Switch
+              checked={settings.maintenanceMode}
+              onCheckedChange={(checked) => updateSetting('maintenanceMode', checked)}
+              className={settings.maintenanceMode ? '!bg-red-500' : ''}
+            />
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Supabase Info */}
-      <div className="glass rounded-xl p-6 border-l-4 border-[#c9a227]">
-        <h3 className="text-lg font-semibold text-white mb-2">💡 Database</h3>
-        <p className="text-gray-400 text-sm">
-          Innstillinger lagres i Supabase. For å endre database-konfigurasjon, 
-          oppdater miljøvariablene i <code className="text-[#c9a227]">.env</code> filen.
-        </p>
-      </div>
+      <Card className="border-l-4 border-l-[#5F4E9D]">
+        <CardContent className="pt-6">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">Database</h3>
+          <p className="text-gray-500 text-sm">
+            Innstillinger lagres i Supabase. For å endre database-konfigurasjon,
+            oppdater miljøvariablene i <code className="text-[#5F4E9D] font-mono bg-gray-100 px-1 rounded">.env</code> filen.
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 }

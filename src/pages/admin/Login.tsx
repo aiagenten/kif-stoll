@@ -1,134 +1,137 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Lock, Mail, Eye, EyeOff, AlertCircle, Gamepad2 } from 'lucide-react'
-import { supabase } from '../../lib/supabase'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Lock, Mail, Eye, EyeOff, AlertCircle, Gamepad2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function AdminLogin() {
-  const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
-      })
+      });
 
-      if (error) throw error
-      navigate('/admin')
+      if (error) throw error;
+      navigate("/admin");
     } catch (err: any) {
-      setError(err.message || 'Innlogging feilet')
+      setError(err.message || "Innlogging feilet");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-[#1C244B] flex items-center justify-center px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Gamepad2 size={36} className="text-[#F2DE27]" />
-            <h1 className="text-3xl font-bold">
-              <span className="text-[#F2DE27]">STOLL</span>
-              <span className="text-white/60 text-xl font-normal ml-2">Esportsenter</span>
-            </h1>
+    <div className="flex min-h-screen items-center justify-center bg-[#1C244B] px-4">
+      <div className="w-full max-w-md">
+        {/* Login card */}
+        <div className="rounded-2xl bg-white p-8 shadow-2xl">
+          {/* Branding */}
+          <div className="mb-8 flex flex-col items-center gap-3">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#5F4E9D]/10">
+              <Gamepad2 className="h-8 w-8 text-[#5F4E9D]" />
+            </div>
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-[#5F4E9D]">STOLL</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Logg inn på adminpanelet
+              </p>
+            </div>
           </div>
-          <p className="text-gray-400 mt-2">Admin Panel</p>
-        </div>
 
-        {/* Login form */}
-        <div className="bg-[#252d5a] rounded-2xl p-8 border border-white/10">
-          <h2 className="text-2xl font-bold text-white mb-6 text-center">Logg inn</h2>
-
+          {/* Error */}
           {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center space-x-2 bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6"
-            >
-              <AlertCircle className="w-5 h-5 text-red-500" />
-              <span className="text-red-400 text-sm">{error}</span>
-            </motion.div>
+            <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>{error}</span>
+            </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-gray-400 text-sm mb-2">E-post</label>
+          {/* Form */}
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="email">E-post</Label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                <input
+                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Input
+                  id="email"
                   type="email"
+                  placeholder="admin@stoll.gg"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 rounded-lg bg-[#1C244B] border border-white/10 text-white focus:border-[#5F4E9D] focus:outline-none transition-colors"
-                  placeholder="admin@stoll.gg"
                   required
+                  className="pl-10"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-gray-400 text-sm mb-2">Passord</label>
+            <div className="space-y-2">
+              <Label htmlFor="password">Passord</Label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
+                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-3 rounded-lg bg-[#1C244B] border border-white/10 text-white focus:border-[#5F4E9D] focus:outline-none transition-colors"
-                  placeholder="••••••••"
                   required
+                  className="pl-10 pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
             </div>
 
-            <motion.button
+            <Button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-[#5F4E9D] to-[#4a3d7a] rounded-lg text-white font-semibold flex items-center justify-center space-x-2 hover:shadow-lg hover:shadow-purple-500/20 transition-all disabled:opacity-50"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              className="w-full bg-[#5F4E9D] hover:bg-[#5F4E9D]/90"
             >
               {loading ? (
                 <span>Logger inn...</span>
               ) : (
-                <>
-                  <Lock className="w-5 h-5" />
-                  <span>Logg inn</span>
-                </>
+                <span className="flex items-center gap-2">
+                  <Lock className="h-4 w-4" />
+                  Logg inn
+                </span>
               )}
-            </motion.button>
+            </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <a href="/" className="text-gray-500 hover:text-[#F2DE27] text-sm transition-colors">
-              ← Tilbake til nettsiden
-            </a>
-          </div>
         </div>
-      </motion.div>
+
+        {/* Back link */}
+        <div className="mt-6 text-center">
+          <a
+            href="/"
+            className="text-sm text-white/60 transition-colors hover:text-[#F2DE27]"
+          >
+            &larr; Tilbake til nettsiden
+          </a>
+        </div>
+      </div>
     </div>
-  )
+  );
 }

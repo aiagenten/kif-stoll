@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Plus, Edit2, Trash2, X, Save, Loader2 } from 'lucide-react'
-import { supabase } from '../../lib/supabase'
+import { Star, Plus, Edit2, Trash2, Save, Loader2 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 interface Review {
   id: string
@@ -62,9 +75,9 @@ export default function AdminReviews() {
           .eq('id', editingReview.id)
 
         if (error) throw error
-        
-        setReviews(prev => prev.map(r => 
-          r.id === editingReview.id 
+
+        setReviews(prev => prev.map(r =>
+          r.id === editingReview.id
             ? { ...r, ...formData, author: formData.author }
             : r
         ))
@@ -96,7 +109,7 @@ export default function AdminReviews() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Er du sikker på at du vil slette denne anmeldelsen?')) return
+    if (!confirm('Er du sikker p\u00e5 at du vil slette denne anmeldelsen?')) return
 
     try {
       const { error } = await supabase
@@ -148,7 +161,7 @@ export default function AdminReviews() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 text-[#c9a227] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#5F4E9D] animate-spin" />
       </div>
     )
   }
@@ -158,207 +171,181 @@ export default function AdminReviews() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-white">Anmeldelser</h2>
-          <p className="text-gray-500 text-sm">Administrer kundeomtaler som vises på nettsiden</p>
+          <h2 className="text-xl font-bold text-gray-900">Anmeldelser</h2>
+          <p className="text-gray-500 text-sm">Administrer kundeomtaler som vises p&aring; nettsiden</p>
         </div>
-        <motion.button
-          onClick={() => setIsAddingNew(true)}
-          className="flex items-center space-x-2 px-4 py-2 gradient-gold rounded-lg text-[#1a1a1a] font-semibold"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
+        <Button variant="accent" onClick={() => setIsAddingNew(true)}>
           <Plus className="w-5 h-5" />
-          <span>Legg til</span>
-        </motion.button>
+          Legg til
+        </Button>
       </div>
 
       {/* Add/Edit modal */}
-      <AnimatePresence>
-        {isAddingNew && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-            onClick={(e) => e.target === e.currentTarget && resetForm()}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="glass rounded-2xl p-6 w-full max-w-md"
+      <Dialog open={isAddingNew} onOpenChange={(open) => { if (!open) resetForm() }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingReview ? 'Rediger anmeldelse' : 'Ny anmeldelse'}
+            </DialogTitle>
+          </DialogHeader>
+
+          <DialogBody className="space-y-4">
+            <div className="space-y-2">
+              <Label>Navn</Label>
+              <Input
+                value={formData.author}
+                onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
+                placeholder="Kundens navn"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Vurdering</Label>
+              <div className="flex space-x-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
+                    className="p-1"
+                    type="button"
+                  >
+                    <Star
+                      className={`w-8 h-8 transition-colors ${
+                        star <= formData.rating
+                          ? 'text-yellow-400 fill-yellow-400'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Anmeldelse</Label>
+              <Textarea
+                value={formData.text}
+                onChange={(e) => setFormData(prev => ({ ...prev, text: e.target.value }))}
+                rows={4}
+                placeholder="Hva sa kunden?"
+              />
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                id="visible"
+                checked={formData.visible}
+                onChange={(e) => setFormData(prev => ({ ...prev, visible: e.target.checked }))}
+                className="w-4 h-4 rounded border-gray-300 text-[#5F4E9D] focus:ring-[#5F4E9D]"
+              />
+              <Label htmlFor="visible" className="cursor-pointer">Vis p&aring; nettsiden</Label>
+            </div>
+          </DialogBody>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={resetForm}>
+              Avbryt
+            </Button>
+            <Button
+              variant="accent"
+              onClick={handleSave}
+              disabled={!formData.author || !formData.text || saving}
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-white">
-                  {editingReview ? 'Rediger anmeldelse' : 'Ny anmeldelse'}
-                </h3>
-                <button onClick={resetForm} className="text-gray-400 hover:text-white">
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-gray-400 text-sm mb-2">Navn</label>
-                  <input
-                    type="text"
-                    value={formData.author}
-                    onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
-                    className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none"
-                    placeholder="Kundens navn"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-400 text-sm mb-2">Vurdering</label>
-                  <div className="flex space-x-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
-                        className="p-1"
-                      >
-                        <Star
-                          className={`w-8 h-8 transition-colors ${
-                            star <= formData.rating 
-                              ? 'text-yellow-400 fill-yellow-400' 
-                              : 'text-gray-600'
-                          }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-gray-400 text-sm mb-2">Anmeldelse</label>
-                  <textarea
-                    value={formData.text}
-                    onChange={(e) => setFormData(prev => ({ ...prev, text: e.target.value }))}
-                    rows={4}
-                    className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none resize-none"
-                    placeholder="Hva sa kunden?"
-                  />
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id="visible"
-                    checked={formData.visible}
-                    onChange={(e) => setFormData(prev => ({ ...prev, visible: e.target.checked }))}
-                    className="w-5 h-5 rounded border-gray-700 bg-[#2a2a2a] text-[#c9a227] focus:ring-[#c9a227]"
-                  />
-                  <label htmlFor="visible" className="text-gray-300">Vis på nettsiden</label>
-                </div>
-
-                <div className="flex space-x-3 pt-4">
-                  <button
-                    onClick={resetForm}
-                    className="flex-1 py-3 border border-gray-600 rounded-lg text-gray-300 font-semibold hover:bg-white/5 transition-colors"
-                  >
-                    Avbryt
-                  </button>
-                  <button
-                    onClick={handleSave}
-                    disabled={!formData.author || !formData.text || saving}
-                    className="flex-1 py-3 gradient-gold rounded-lg text-[#1a1a1a] font-semibold flex items-center justify-center space-x-2 disabled:opacity-50"
-                  >
-                    {saving ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <>
-                        <Save className="w-5 h-5" />
-                        <span>Lagre</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              {saving ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <Save className="w-5 h-5" />
+                  Lagre
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Reviews list */}
       <div className="space-y-4">
         {reviews.length === 0 ? (
-          <div className="glass rounded-xl p-8 text-center">
-            <p className="text-gray-400">Ingen anmeldelser ennå. Klikk "Legg til" for å opprette den første!</p>
-          </div>
+          <Card className="p-8 text-center">
+            <p className="text-gray-500">Ingen anmeldelser enn&aring;. Klikk "Legg til" for &aring; opprette den f&oslash;rste!</p>
+          </Card>
         ) : (
-          reviews.map((review, index) => (
-            <motion.div
-              key={review.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className={`glass rounded-xl p-6 ${!review.visible ? 'opacity-50' : ''}`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <span className="font-semibold text-white">{review.author}</span>
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < review.rating 
-                              ? 'text-yellow-400 fill-yellow-400' 
-                              : 'text-gray-600'
-                          }`}
-                        />
-                      ))}
+          reviews.map((review) => (
+            <Card key={review.id} className={!review.visible ? 'opacity-50' : ''}>
+              <CardContent className="pt-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <span className="font-semibold text-gray-900">{review.author}</span>
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${
+                              i < review.rating
+                                ? 'text-yellow-400 fill-yellow-400'
+                                : 'text-gray-300'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      {!review.visible && (
+                        <Badge variant="secondary">Skjult</Badge>
+                      )}
                     </div>
-                    {!review.visible && (
-                      <span className="px-2 py-1 rounded text-xs bg-gray-700 text-gray-400">
-                        Skjult
-                      </span>
-                    )}
+                    <p className="text-gray-600">{review.text}</p>
                   </div>
-                  <p className="text-gray-400">{review.text}</p>
-                </div>
 
-                <div className="flex items-center space-x-2 ml-4">
-                  <button
-                    onClick={() => toggleVisibility(review.id, review.visible)}
-                    className={`p-2 rounded-lg transition-colors ${
-                      review.visible 
-                        ? 'text-green-400 hover:bg-green-500/10' 
-                        : 'text-gray-500 hover:bg-gray-500/10'
-                    }`}
-                    title={review.visible ? 'Skjul' : 'Vis'}
-                  >
-                    {review.visible ? '👁' : '👁‍🗨'}
-                  </button>
-                  <button
-                    onClick={() => handleEdit(review)}
-                    className="p-2 rounded-lg text-gray-400 hover:bg-white/5 hover:text-[#c9a227] transition-colors"
-                  >
-                    <Edit2 className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(review.id)}
-                    className="p-2 rounded-lg text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-colors"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                  <div className="flex items-center space-x-1 ml-4">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => toggleVisibility(review.id, review.visible)}
+                      title={review.visible ? 'Skjul' : 'Vis'}
+                      className={review.visible ? 'text-green-600 hover:text-green-700' : 'text-gray-400'}
+                    >
+                      {review.visible ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(review)}
+                      className="hover:text-[#5F4E9D]"
+                    >
+                      <Edit2 className="w-5 h-5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(review.id)}
+                      className="hover:text-red-500"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </CardContent>
+            </Card>
           ))
         )}
       </div>
 
       {/* Info box */}
-      <div className="glass rounded-xl p-6 border-l-4 border-[#c9a227]">
-        <h3 className="text-lg font-semibold text-white mb-2">💡 Tips</h3>
-        <p className="text-gray-400 text-sm">
-          For å synkronisere med Google Reviews, koble til Google My Business API i innstillingene.
-          Foreløpig kan du manuelt legge til anmeldelser fra Google her.
-        </p>
-      </div>
+      <Card className="border-l-4 border-l-[#F2DE27]">
+        <CardContent className="pt-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Tips</h3>
+          <p className="text-gray-500 text-sm">
+            For &aring; synkronisere med Google Reviews, koble til Google My Business API i innstillingene.
+            Forel&oslash;pig kan du manuelt legge til anmeldelser fra Google her.
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
 import { FileText, Save, RefreshCw, Image, Type, AlignLeft, Phone, Sparkles, Clock, Upload, Trash2, Check, AlertCircle, Video } from 'lucide-react'
 import { getAllContent, updateMultipleContent, uploadImage, uploadVideo, deleteImage, defaultContent } from '../../lib/supabase'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 
 interface ContentSection {
   id: string
@@ -105,7 +110,7 @@ export default function AdminContent() {
     try {
       const dbContent = await getAllContent()
       const mergedContent = { ...defaultContent, ...dbContent }
-      
+
       // Update sections with loaded content
       setSections(prev => prev.map(section => ({
         ...section,
@@ -128,8 +133,8 @@ export default function AdminContent() {
   }
 
   const updateField = (sectionId: string, fieldKey: string, value: string) => {
-    setSections(prev => prev.map(section => 
-      section.id === sectionId 
+    setSections(prev => prev.map(section =>
+      section.id === sectionId
         ? {
             ...section,
             fields: section.fields.map(field =>
@@ -153,7 +158,7 @@ export default function AdminContent() {
       )
 
       const success = await updateMultipleContent(items)
-      
+
       if (success) {
         setHasChanges(false)
         showNotification('success', 'Endringer lagret!')
@@ -181,11 +186,11 @@ export default function AdminContent() {
 
     setUploadingField(fieldKey)
     try {
-      const folder = fieldKey.includes('hero') ? 'hero' : 
+      const folder = fieldKey.includes('hero') ? 'hero' :
                      fieldKey.includes('team') ? 'team' : 'general'
-      
+
       const url = await uploadImage(file, folder)
-      
+
       if (url) {
         updateField(sectionId, fieldKey, url)
         showNotification('success', 'Bilde lastet opp!')
@@ -215,7 +220,7 @@ export default function AdminContent() {
     setUploadingField(fieldKey)
     try {
       const url = await uploadVideo(file, 'hero')
-      
+
       if (url) {
         updateField(sectionId, fieldKey, url)
         showNotification('success', 'Video lastet opp!')
@@ -232,7 +237,7 @@ export default function AdminContent() {
 
   const handleImageDelete = async (sectionId: string, fieldKey: string, currentUrl: string) => {
     if (!currentUrl) return
-    
+
     try {
       await deleteImage(currentUrl)
       updateField(sectionId, fieldKey, '')
@@ -249,130 +254,116 @@ export default function AdminContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <RefreshCw className="w-8 h-8 text-[#c9a227] animate-spin" />
-        <span className="ml-3 text-gray-400">Laster innhold...</span>
+        <RefreshCw className="w-8 h-8 text-[#5F4E9D] animate-spin" />
+        <span className="ml-3 text-gray-500">Laster innhold...</span>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-gray-50 min-h-full p-6">
       {/* Notification */}
       {notification && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className={`fixed top-4 right-4 z-50 flex items-center space-x-2 px-4 py-3 rounded-lg shadow-lg ${
-            notification.type === 'success' 
-              ? 'bg-green-500/20 border border-green-500/30 text-green-400'
-              : 'bg-red-500/20 border border-red-500/30 text-red-400'
-          }`}
+        <div
+          className={cn(
+            'fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg border animate-in fade-in slide-in-from-top-2',
+            notification.type === 'success'
+              ? 'bg-white border-green-200 text-green-700'
+              : 'bg-white border-red-200 text-red-700'
+          )}
         >
           {notification.type === 'success' ? (
             <Check className="w-5 h-5" />
           ) : (
             <AlertCircle className="w-5 h-5" />
           )}
-          <span>{notification.message}</span>
-        </motion.div>
+          <span className="text-sm font-medium">{notification.message}</span>
+        </div>
       )}
 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-white">Innholdsadministrasjon</h2>
+          <h2 className="text-xl font-bold text-[#1C244B]">Innholdsadministrasjon</h2>
           <p className="text-gray-500 text-sm">Rediger tekst og bilder på nettsiden</p>
         </div>
-        <div className="flex items-center space-x-3">
-          <motion.button
-            onClick={loadContent}
-            className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <RefreshCw className="w-5 h-5" />
-            <span>Oppdater</span>
-          </motion.button>
-          <motion.button
+        <div className="flex items-center gap-3">
+          <Button variant="outline" onClick={loadContent}>
+            <RefreshCw className="w-4 h-4" />
+            Oppdater
+          </Button>
+          <Button
+            variant="accent"
             onClick={handleSave}
             disabled={!hasChanges || saving}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all ${
-              hasChanges 
-                ? 'gradient-gold text-[#1a1a1a]' 
-                : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-            }`}
-            whileHover={hasChanges ? { scale: 1.05 } : {}}
-            whileTap={hasChanges ? { scale: 0.95 } : {}}
           >
             {saving ? (
-              <RefreshCw className="w-5 h-5 animate-spin" />
+              <RefreshCw className="w-4 h-4 animate-spin" />
             ) : (
-              <Save className="w-5 h-5" />
+              <Save className="w-4 h-4" />
             )}
-            <span>{saving ? 'Lagrer...' : 'Lagre endringer'}</span>
-          </motion.button>
+            {saving ? 'Lagrer...' : 'Lagre endringer'}
+          </Button>
         </div>
       </div>
 
       <div className="grid lg:grid-cols-4 gap-6">
         {/* Sidebar */}
-        <div className="glass rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-gray-400 mb-4">SEKSJONER</h3>
-          <div className="space-y-1">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => setActiveSection(section.id)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeSection === section.id
-                    ? 'bg-[#c9a227]/10 text-[#c9a227]'
-                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                }`}
-              >
-                <section.icon className="w-5 h-5" />
-                <span>{section.title}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Seksjoner</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-1">
+              {sections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() => setActiveSection(section.id)}
+                  className={cn(
+                    'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors',
+                    activeSection === section.id
+                      ? 'bg-[#5F4E9D]/10 text-[#5F4E9D] font-medium'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  )}
+                >
+                  <section.icon className="w-4 h-4" />
+                  <span>{section.title}</span>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Content editor */}
-        <div className="lg:col-span-3 glass rounded-xl p-6">
+        <Card className="lg:col-span-3">
           {currentSection && (
-            <motion.div
-              key={currentSection.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-6"
-            >
-              <h3 className="text-lg font-semibold text-white flex items-center space-x-2">
-                <currentSection.icon className="w-5 h-5 text-[#c9a227]" />
-                <span>{currentSection.title}</span>
-              </h3>
-
-              <div className="space-y-4">
+            <div>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-[#1C244B]">
+                  <currentSection.icon className="w-5 h-5 text-[#5F4E9D]" />
+                  {currentSection.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
                 {currentSection.fields.map((field) => (
-                  <div key={field.key}>
-                    <label className="block text-gray-400 text-sm mb-2">{field.label}</label>
-                    
+                  <div key={field.key} className="space-y-2">
+                    <Label>{field.label}</Label>
+
                     {(field.type === 'text' || field.type === 'url') && (
-                      <input
+                      <Input
                         type={field.type === 'url' ? 'url' : 'text'}
                         value={field.value}
                         onChange={(e) => updateField(currentSection.id, field.key, e.target.value)}
                         placeholder={field.placeholder}
-                        className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none placeholder-gray-600"
                       />
                     )}
 
                     {field.type === 'textarea' && (
-                      <textarea
+                      <Textarea
                         value={field.value}
                         onChange={(e) => updateField(currentSection.id, field.key, e.target.value)}
                         placeholder={field.placeholder}
                         rows={4}
-                        className="w-full px-4 py-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:border-[#c9a227] focus:outline-none resize-none placeholder-gray-600"
                       />
                     )}
 
@@ -395,54 +386,56 @@ export default function AdminContent() {
 
                         {field.value ? (
                           <div className="relative group">
-                            <img 
-                              src={field.value} 
-                              alt={field.label} 
-                              className="w-full max-h-60 object-cover rounded-lg border border-gray-700"
+                            <img
+                              src={field.value}
+                              alt={field.label}
+                              className="w-full max-h-60 object-cover rounded-lg border border-gray-200"
                             />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center space-x-3">
-                              <button
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-3">
+                              <Button
+                                size="icon"
+                                variant="accent"
                                 onClick={() => fileInputRefs.current[field.key]?.click()}
-                                className="p-3 bg-[#c9a227] rounded-lg text-[#1a1a1a] hover:bg-[#d4af37] transition-colors"
                               >
-                                <Upload className="w-5 h-5" />
-                              </button>
-                              <button
+                                <Upload className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="destructive"
                                 onClick={() => handleImageDelete(currentSection.id, field.key, field.value)}
-                                className="p-3 bg-red-500 rounded-lg text-white hover:bg-red-600 transition-colors"
                               >
-                                <Trash2 className="w-5 h-5" />
-                              </button>
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
                             </div>
                           </div>
                         ) : (
                           <button
                             onClick={() => fileInputRefs.current[field.key]?.click()}
                             disabled={uploadingField === field.key}
-                            className="w-full border-2 border-dashed border-gray-700 rounded-lg p-8 text-center hover:border-[#c9a227] transition-colors cursor-pointer disabled:opacity-50"
+                            className="w-full border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#5F4E9D] transition-colors cursor-pointer disabled:opacity-50 bg-white"
                           >
                             {uploadingField === field.key ? (
                               <>
-                                <RefreshCw className="w-12 h-12 text-[#c9a227] mx-auto mb-3 animate-spin" />
-                                <p className="text-[#c9a227] text-sm">Laster opp...</p>
+                                <RefreshCw className="w-10 h-10 text-[#5F4E9D] mx-auto mb-3 animate-spin" />
+                                <p className="text-[#5F4E9D] text-sm font-medium">Laster opp...</p>
                               </>
                             ) : (
                               <>
-                                <Image className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                                <Image className="w-10 h-10 text-gray-400 mx-auto mb-3" />
                                 <p className="text-gray-500 text-sm">Klikk for å laste opp bilde</p>
-                                <p className="text-gray-600 text-xs mt-1">PNG, JPG, WebP opptil 5MB</p>
+                                <p className="text-gray-400 text-xs mt-1">PNG, JPG, WebP opptil 5MB</p>
                               </>
                             )}
                           </button>
                         )}
 
                         {/* URL input for manual entry */}
-                        <input
+                        <Input
                           type="url"
                           value={field.value}
                           onChange={(e) => updateField(currentSection.id, field.key, e.target.value)}
                           placeholder="Eller lim inn bilde-URL direkte..."
-                          className="w-full px-4 py-2 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white text-sm focus:border-[#c9a227] focus:outline-none placeholder-gray-600"
+                          className="text-sm"
                         />
                       </div>
                     )}
@@ -466,76 +459,80 @@ export default function AdminContent() {
 
                         {field.value ? (
                           <div className="relative group">
-                            <video 
+                            <video
                               src={field.value}
-                              className="w-full max-h-60 object-cover rounded-lg border border-gray-700"
+                              className="w-full max-h-60 object-cover rounded-lg border border-gray-200"
                               controls
                               muted
                             />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center space-x-3">
-                              <button
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-3">
+                              <Button
+                                size="icon"
+                                variant="accent"
                                 onClick={() => fileInputRefs.current[field.key]?.click()}
-                                className="p-3 bg-[#c9a227] rounded-lg text-[#1a1a1a] hover:bg-[#d4af37] transition-colors"
                               >
-                                <Upload className="w-5 h-5" />
-                              </button>
-                              <button
+                                <Upload className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="destructive"
                                 onClick={() => handleImageDelete(currentSection.id, field.key, field.value)}
-                                className="p-3 bg-red-500 rounded-lg text-white hover:bg-red-600 transition-colors"
                               >
-                                <Trash2 className="w-5 h-5" />
-                              </button>
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
                             </div>
                           </div>
                         ) : (
                           <button
                             onClick={() => fileInputRefs.current[field.key]?.click()}
                             disabled={uploadingField === field.key}
-                            className="w-full border-2 border-dashed border-gray-700 rounded-lg p-8 text-center hover:border-[#c9a227] transition-colors cursor-pointer disabled:opacity-50"
+                            className="w-full border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#5F4E9D] transition-colors cursor-pointer disabled:opacity-50 bg-white"
                           >
                             {uploadingField === field.key ? (
                               <>
-                                <RefreshCw className="w-12 h-12 text-[#c9a227] mx-auto mb-3 animate-spin" />
-                                <p className="text-[#c9a227] text-sm">Laster opp video...</p>
+                                <RefreshCw className="w-10 h-10 text-[#5F4E9D] mx-auto mb-3 animate-spin" />
+                                <p className="text-[#5F4E9D] text-sm font-medium">Laster opp video...</p>
                               </>
                             ) : (
                               <>
-                                <Video className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                                <Video className="w-10 h-10 text-gray-400 mx-auto mb-3" />
                                 <p className="text-gray-500 text-sm">Klikk for å laste opp video</p>
-                                <p className="text-gray-600 text-xs mt-1">MP4, WebM opptil 50MB</p>
+                                <p className="text-gray-400 text-xs mt-1">MP4, WebM opptil 50MB</p>
                               </>
                             )}
                           </button>
                         )}
 
                         {/* URL input for manual entry */}
-                        <input
+                        <Input
                           type="url"
                           value={field.value}
                           onChange={(e) => updateField(currentSection.id, field.key, e.target.value)}
                           placeholder="Eller lim inn video-URL direkte..."
-                          className="w-full px-4 py-2 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white text-sm focus:border-[#c9a227] focus:outline-none placeholder-gray-600"
+                          className="text-sm"
                         />
                       </div>
                     )}
                   </div>
                 ))}
-              </div>
-            </motion.div>
+              </CardContent>
+            </div>
           )}
-        </div>
+        </Card>
       </div>
 
       {/* Info */}
-      <div className="glass rounded-xl p-6 border-l-4 border-[#c9a227]">
-        <h3 className="text-lg font-semibold text-white mb-2">📝 Tips</h3>
-        <ul className="text-gray-400 text-sm space-y-1">
-          <li>• Endringer lagres i databasen og oppdateres automatisk på nettsiden</li>
-          <li>• For bilder kan du enten laste opp en fil eller lime inn en ekstern URL</li>
-          <li>• Maksimal filstørrelse for bilder er 5MB</li>
-          <li>• Refresh nettsiden etter lagring for å se endringene</li>
-        </ul>
-      </div>
+      <Card className="border-l-4 border-l-[#F2DE27]">
+        <CardContent className="p-6">
+          <h3 className="text-base font-semibold text-[#1C244B] mb-2">Tips</h3>
+          <ul className="text-gray-500 text-sm space-y-1">
+            <li>Endringer lagres i databasen og oppdateres automatisk på nettsiden</li>
+            <li>For bilder kan du enten laste opp en fil eller lime inn en ekstern URL</li>
+            <li>Maksimal filstørrelse for bilder er 5MB</li>
+            <li>Refresh nettsiden etter lagring for å se endringene</li>
+          </ul>
+        </CardContent>
+      </Card>
     </div>
   )
 }

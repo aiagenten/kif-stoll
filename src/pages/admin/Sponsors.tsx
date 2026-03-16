@@ -1,8 +1,21 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Plus, Edit2, Trash2, Save, X, Image as ImageIcon, Eye, EyeOff, GripVertical } from 'lucide-react'
-import { getAllSponsors, createSponsor, updateSponsor, deleteSponsor, uploadImage } from '../../lib/supabase'
-import type { Sponsor } from '../../lib/supabase'
+import { Plus, Edit2, Trash2, Save, Image as ImageIcon, Eye, EyeOff, GripVertical } from 'lucide-react'
+import { getAllSponsors, createSponsor, updateSponsor, deleteSponsor, uploadImage } from '@/lib/supabase'
+import type { Sponsor } from '@/lib/supabase'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 const emptySponsor: Omit<Sponsor, 'id' | 'created_at'> = {
   name: '',
@@ -124,126 +137,108 @@ export default function AdminSponsors() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Sponsorer</h1>
-          <p className="text-gray-600">Administrer sponsorlogoer som vises på nettsiden</p>
+          <p className="text-gray-600 text-sm mt-1">Administrer sponsorlogoer som vises på nettsiden</p>
         </div>
-        <button
-          onClick={handleNew}
-          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-        >
+        <Button onClick={handleNew}>
           <Plus size={18} /> Ny sponsor
-        </button>
+        </Button>
       </div>
 
       {/* Form modal */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-2xl w-full max-w-lg"
-          >
-            <div className="p-6 border-b flex items-center justify-between">
-              <h2 className="text-xl font-bold">{editing ? 'Rediger sponsor' : 'Ny sponsor'}</h2>
-              <button onClick={handleCancel} className="p-2 hover:bg-gray-100 rounded-lg">
-                <X size={20} />
-              </button>
+      <Dialog open={showForm} onOpenChange={(open) => !open && handleCancel()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editing ? 'Rediger sponsor' : 'Ny sponsor'}</DialogTitle>
+          </DialogHeader>
+          <DialogBody className="space-y-4">
+            {/* Name */}
+            <div className="space-y-1.5">
+              <Label htmlFor="sponsor-name">Navn *</Label>
+              <Input
+                id="sponsor-name"
+                value={formData.name}
+                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                placeholder="F.eks. Logitech"
+              />
             </div>
-            <div className="p-6 space-y-4">
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-medium mb-1">Navn *</label>
-                <input
-                  value={formData.name}
-                  onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  placeholder="F.eks. Logitech"
-                />
-              </div>
 
-              {/* Website */}
-              <div>
-                <label className="block text-sm font-medium mb-1">Nettside</label>
-                <input
-                  value={formData.website || ''}
-                  onChange={e => setFormData({ ...formData, website: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  placeholder="https://logitech.com"
-                />
-              </div>
+            {/* Website */}
+            <div className="space-y-1.5">
+              <Label htmlFor="sponsor-website">Nettside</Label>
+              <Input
+                id="sponsor-website"
+                value={formData.website || ''}
+                onChange={e => setFormData({ ...formData, website: e.target.value })}
+                placeholder="https://logitech.com"
+              />
+            </div>
 
-              {/* Logo */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Logo</label>
-                <div className="space-y-2">
-                  {formData.logo_url && (
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={formData.logo_url}
-                        alt="Logo preview"
-                        className="h-16 max-w-[160px] object-contain rounded border bg-gray-50 p-2"
-                      />
-                      <button
-                        onClick={() => setFormData({ ...formData, logo_url: '' })}
-                        className="p-2 text-red-400 hover:bg-red-50 rounded-lg"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  )}
-                  <label className="flex items-center gap-2 px-4 py-2 border border-dashed border-gray-300 rounded-lg text-gray-500 hover:text-purple-600 hover:border-purple-400 cursor-pointer transition-colors w-fit">
-                    <ImageIcon size={18} />
-                    {uploadingImage ? 'Laster opp...' : 'Last opp logo'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      disabled={uploadingImage}
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Order & Visible */}
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1">Rekkefølge</label>
-                  <input
-                    type="number"
-                    value={formData.order_index}
-                    onChange={e => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                    min={0}
+            {/* Logo */}
+            <div className="space-y-2">
+              <Label>Logo</Label>
+              {formData.logo_url && (
+                <div className="flex items-center gap-3">
+                  <img
+                    src={formData.logo_url}
+                    alt="Logo preview"
+                    className="h-16 max-w-[160px] object-contain rounded border bg-gray-50 p-2"
                   />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                    onClick={() => setFormData({ ...formData, logo_url: '' })}
+                  >
+                    <Trash2 size={16} />
+                  </Button>
                 </div>
-                <div className="flex items-end pb-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.visible}
-                      onChange={e => setFormData({ ...formData, visible: e.target.checked })}
-                      className="rounded"
-                    />
-                    <span className="text-sm font-medium">Synlig</span>
-                  </label>
+              )}
+              <label className="flex items-center gap-2 px-4 py-2 border border-dashed border-gray-300 rounded-lg text-gray-500 hover:text-[#5F4E9D] hover:border-[#5F4E9D] cursor-pointer transition-colors w-fit text-sm">
+                <ImageIcon size={18} />
+                {uploadingImage ? 'Laster opp...' : 'Last opp logo'}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  disabled={uploadingImage}
+                />
+              </label>
+            </div>
+
+            {/* Order & Visible */}
+            <div className="flex gap-4">
+              <div className="flex-1 space-y-1.5">
+                <Label htmlFor="sponsor-order">Rekkefølge</Label>
+                <Input
+                  id="sponsor-order"
+                  type="number"
+                  value={formData.order_index}
+                  onChange={e => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
+                  min={0}
+                />
+              </div>
+              <div className="flex items-end pb-1">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={formData.visible}
+                    onCheckedChange={(checked) => setFormData({ ...formData, visible: checked })}
+                  />
+                  <Label className="cursor-pointer">Synlig</Label>
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t flex justify-end gap-3">
-              <button onClick={handleCancel} className="px-4 py-2 border rounded-lg hover:bg-gray-50">
-                Avbryt
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={saving || !formData.name}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
-              >
-                <Save size={16} /> {saving ? 'Lagrer...' : 'Lagre'}
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancel}>
+              Avbryt
+            </Button>
+            <Button onClick={handleSave} disabled={saving || !formData.name}>
+              <Save size={16} /> {saving ? 'Lagrer...' : 'Lagre'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Sponsors list */}
       {loading ? (
@@ -252,23 +247,18 @@ export default function AdminSponsors() {
         <div className="text-center py-12">
           <ImageIcon size={48} className="mx-auto text-gray-300 mb-3" />
           <p className="text-gray-500 mb-3">Ingen sponsorer enda</p>
-          <button
-            onClick={handleNew}
-            className="text-purple-600 hover:underline text-sm"
-          >
+          <Button variant="link" onClick={handleNew}>
             Legg til første sponsor
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="space-y-3">
           {sponsors
             .sort((a, b) => a.order_index - b.order_index)
             .map(sponsor => (
-              <motion.div
+              <Card
                 key={sponsor.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex items-center gap-4 p-4 bg-white rounded-xl border hover:shadow-sm transition-shadow ${
+                className={`flex items-center gap-4 p-4 hover:shadow-md transition-shadow ${
                   !sponsor.visible ? 'opacity-60' : ''
                 }`}
               >
@@ -292,7 +282,7 @@ export default function AdminSponsors() {
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-gray-900">{sponsor.name}</h3>
                     {!sponsor.visible && (
-                      <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">Skjult</span>
+                      <Badge variant="secondary">Skjult</Badge>
                     )}
                   </div>
                   {sponsor.website && (
@@ -300,7 +290,7 @@ export default function AdminSponsors() {
                       href={sponsor.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-purple-600 hover:underline"
+                      className="text-sm text-[#5F4E9D] hover:underline"
                     >
                       {sponsor.website}
                     </a>
@@ -309,30 +299,34 @@ export default function AdminSponsors() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2">
-                  <button
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleToggleVisible(sponsor)}
-                    className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg"
                     title={sponsor.visible ? 'Skjul' : 'Vis'}
                   >
                     {sponsor.visible ? <Eye size={16} /> : <EyeOff size={16} />}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleEdit(sponsor)}
-                    className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg"
                     title="Rediger"
                   >
                     <Edit2 size={16} />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:text-red-600 hover:bg-red-50"
                     onClick={() => sponsor.id && handleDelete(sponsor.id, sponsor.name)}
-                    className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
                     title="Slett"
                   >
                     <Trash2 size={16} />
-                  </button>
+                  </Button>
                 </div>
-              </motion.div>
+              </Card>
             ))}
         </div>
       )}

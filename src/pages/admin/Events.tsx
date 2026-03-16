@@ -1,8 +1,23 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Plus, Edit2, Trash2, Calendar, Clock, MapPin, Users, Save, X } from 'lucide-react'
-import { getAllEvents, createEvent, updateEvent, deleteEvent, uploadImage } from '../../lib/supabase'
-import type { Event } from '../../lib/supabase'
+import { Plus, Edit2, Trash2, Calendar, Clock, MapPin, Users, Save } from 'lucide-react'
+import { getAllEvents, createEvent, updateEvent, deleteEvent, uploadImage } from '@/lib/supabase'
+import type { Event } from '@/lib/supabase'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Select } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 const eventTypes = [
   { value: 'tournament', label: '🏆 Turnering', color: '#F2DE27' },
@@ -106,150 +121,123 @@ export default function AdminEvents() {
           <h1 className="text-2xl font-bold text-gray-900">Events</h1>
           <p className="text-gray-600">Administrer turneringer, treninger og arrangementer</p>
         </div>
-        <button
-          onClick={handleNew}
-          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-        >
+        <Button onClick={handleNew}>
           <Plus size={18} /> Nytt Event
-        </button>
+        </Button>
       </div>
 
       {/* Form modal */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-          >
-            <div className="p-6 border-b flex items-center justify-between">
-              <h2 className="text-xl font-bold">{editing ? 'Rediger Event' : 'Nytt Event'}</h2>
-              <button onClick={() => setShowForm(false)} className="p-2 hover:bg-gray-100 rounded-lg">
-                <X size={20} />
-              </button>
+      <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{editing ? 'Rediger Event' : 'Nytt Event'}</DialogTitle>
+          </DialogHeader>
+          <DialogBody className="space-y-4">
+            <div className="space-y-2">
+              <Label>Tittel *</Label>
+              <Input
+                value={formData.title || ''}
+                onChange={e => setFormData({ ...formData, title: e.target.value })}
+                placeholder="F.eks. CS2 Turnering"
+              />
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Tittel *</label>
-                <input
-                  value={formData.title || ''}
-                  onChange={e => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  placeholder="F.eks. CS2 Turnering"
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Dato *</Label>
+                <Input
+                  type="date"
+                  value={formData.date || ''}
+                  onChange={e => setFormData({ ...formData, date: e.target.value })}
                 />
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Dato *</label>
-                  <input
-                    type="date"
-                    value={formData.date || ''}
-                    onChange={e => setFormData({ ...formData, date: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Tidspunkt</label>
-                  <input
-                    type="time"
-                    value={formData.time || ''}
-                    onChange={e => setFormData({ ...formData, time: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Type</label>
-                  <select
-                    value={formData.event_type || 'arrangement'}
-                    onChange={e => setFormData({ ...formData, event_type: e.target.value as Event['event_type'] })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                  >
-                    {eventTypes.map(t => (
-                      <option key={t.value} value={t.value}>{t.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Kapasitet</label>
-                  <input
-                    type="number"
-                    value={formData.capacity || ''}
-                    onChange={e => setFormData({ ...formData, capacity: e.target.value ? parseInt(e.target.value) : undefined })}
-                    className="w-full px-3 py-2 border rounded-lg"
-                    placeholder="Maks deltakere"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">Sted</label>
-                <input
-                  value={formData.location || ''}
-                  onChange={e => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  placeholder="STOLL Esportsenter"
+              <div className="space-y-2">
+                <Label>Tidspunkt</Label>
+                <Input
+                  type="time"
+                  value={formData.time || ''}
+                  onChange={e => setFormData({ ...formData, time: e.target.value })}
                 />
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Beskrivelse</label>
-                <textarea
-                  value={formData.description || ''}
-                  onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 py-2 border rounded-lg"
-                  placeholder="Info om eventet..."
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Type</Label>
+                <Select
+                  value={formData.event_type || 'arrangement'}
+                  onChange={e => setFormData({ ...formData, event_type: e.target.value as Event['event_type'] })}
+                >
+                  {eventTypes.map(t => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Kapasitet</Label>
+                <Input
+                  type="number"
+                  value={formData.capacity || ''}
+                  onChange={e => setFormData({ ...formData, capacity: e.target.value ? parseInt(e.target.value) : undefined })}
+                  placeholder="Maks deltakere"
                 />
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Bilde</label>
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="text-sm" />
-                {formData.image && (
-                  <img src={formData.image} alt="" className="mt-2 h-24 rounded-lg object-cover" />
-                )}
+            <div className="space-y-2">
+              <Label>Sted</Label>
+              <Input
+                value={formData.location || ''}
+                onChange={e => setFormData({ ...formData, location: e.target.value })}
+                placeholder="STOLL Esportsenter"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Beskrivelse</Label>
+              <Textarea
+                value={formData.description || ''}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                rows={3}
+                placeholder="Info om eventet..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Bilde</Label>
+              <Input type="file" accept="image/*" onChange={handleImageUpload} />
+              {formData.image && (
+                <img src={formData.image} alt="" className="mt-2 h-24 rounded-lg object-cover" />
+              )}
+            </div>
+
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={formData.booking_enabled || false}
+                  onCheckedChange={checked => setFormData({ ...formData, booking_enabled: checked })}
+                />
+                <Label>Booking aktivert</Label>
               </div>
-
-              <div className="flex items-center gap-6">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.booking_enabled || false}
-                    onChange={e => setFormData({ ...formData, booking_enabled: e.target.checked })}
-                    className="rounded"
-                  />
-                  <span className="text-sm">Booking aktivert</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.published !== false}
-                    onChange={e => setFormData({ ...formData, published: e.target.checked })}
-                    className="rounded"
-                  />
-                  <span className="text-sm">Publisert</span>
-                </label>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={formData.published !== false}
+                  onCheckedChange={checked => setFormData({ ...formData, published: checked })}
+                />
+                <Label>Publisert</Label>
               </div>
             </div>
-            <div className="p-6 border-t flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="px-4 py-2 border rounded-lg hover:bg-gray-50">
-                Avbryt
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={saving || !formData.title}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
-              >
-                <Save size={16} /> {saving ? 'Lagrer...' : 'Lagre'}
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowForm(false)}>
+              Avbryt
+            </Button>
+            <Button onClick={handleSave} disabled={saving || !formData.title}>
+              <Save size={16} /> {saving ? 'Lagrer...' : 'Lagre'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Events list */}
       {loading ? (
@@ -264,12 +252,9 @@ export default function AdminEvents() {
           {events.map(event => {
             const typeInfo = eventTypes.find(t => t.value === event.event_type)
             return (
-              <div
-                key={event.id}
-                className="flex items-center gap-4 p-4 bg-white rounded-xl border hover:shadow-sm transition-shadow"
-              >
+              <Card key={event.id} className="flex items-center gap-4 p-4">
                 <div
-                  className="w-12 h-12 rounded-lg flex items-center justify-center text-xl"
+                  className="w-12 h-12 rounded-lg flex items-center justify-center text-xl shrink-0"
                   style={{ background: `${typeInfo?.color || '#5F4E9D'}20` }}
                 >
                   {typeInfo?.label.split(' ')[0] || '🎮'}
@@ -278,10 +263,10 @@ export default function AdminEvents() {
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold truncate">{event.title}</h3>
                     {!event.published && (
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">Skjult</span>
+                      <Badge variant="secondary">Skjult</Badge>
                     )}
                     {event.booking_enabled && (
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">Booking</span>
+                      <Badge variant="success">Booking</Badge>
                     )}
                   </div>
                   <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
@@ -291,21 +276,24 @@ export default function AdminEvents() {
                     {event.capacity && <span className="flex items-center gap-1"><Users size={13} /> {event.capacity}</span>}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleEdit(event)}
-                    className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg"
                   >
                     <Edit2 size={16} />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => event.id && handleDelete(event.id)}
-                    className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                    className="text-gray-500 hover:text-red-600 hover:bg-red-50"
                   >
                     <Trash2 size={16} />
-                  </button>
+                  </Button>
                 </div>
-              </div>
+              </Card>
             )
           })}
         </div>
