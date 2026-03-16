@@ -1,14 +1,7 @@
-import React from 'react'
-
 interface IconProps {
   size?: number
   className?: string
   strokeWidth?: number
-}
-
-const defaultProps = {
-  size: 24,
-  strokeWidth: 1.5,
 }
 
 // Controller / Gamepad

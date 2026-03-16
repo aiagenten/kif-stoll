@@ -40,6 +40,7 @@ const menuItems = [
   { icon: Star, label: "Anmeldelser", path: "/admin/reviews" },
   { icon: MessageSquare, label: "Meldinger", path: "/admin/messages" },
   { icon: Share2, label: "Sosiale Medier", path: "/admin/some" },
+  { icon: Bot, label: "Chatbot", path: "/admin/chatbot" },
   { icon: Search, label: "SEO & AEO", path: "/admin/seo" },
   { icon: Settings, label: "Innstillinger", path: "/admin/settings" },
 ];

@@ -10,6 +10,7 @@ interface Message {
 
 const MONTHLY_QUOTA = 500
 const SESSION_ID = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`
+const AUTO_POPUP_KEY = 'stoll_chat_autopopup_shown'
 
 const welcomeMessage: Message = {
   role: 'assistant',
@@ -23,6 +24,7 @@ export default function ChatWidget() {
   const [loading, setLoading] = useState(false)
   const [quotaExceeded, setQuotaExceeded] = useState(false)
   const [monthlyCount, setMonthlyCount] = useState(0)
+  const [pulsing, setPulsing] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -30,6 +32,26 @@ export default function ChatWidget() {
       setMonthlyCount(count)
       if (count >= MONTHLY_QUOTA) setQuotaExceeded(true)
     })
+  }, [])
+
+  // Auto-popup after 10 seconds (only first time)
+  useEffect(() => {
+    const alreadyShown = localStorage.getItem(AUTO_POPUP_KEY)
+    if (alreadyShown) return
+
+    // Start pulsing after 7s to draw attention
+    const pulseTimer = setTimeout(() => setPulsing(true), 7000)
+    // Open chat after 10s
+    const popupTimer = setTimeout(() => {
+      setOpen(true)
+      setPulsing(false)
+      localStorage.setItem(AUTO_POPUP_KEY, '1')
+    }, 10000)
+
+    return () => {
+      clearTimeout(pulseTimer)
+      clearTimeout(popupTimer)
+    }
   }, [])
 
   useEffect(() => {
@@ -180,13 +202,32 @@ export default function ChatWidget() {
 
       {/* Toggle button */}
       <motion.button
-        onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg animate-esport-pulse"
+        onClick={() => { setOpen(!open); setPulsing(false) }}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
         style={{ background: 'var(--gradient-primary)' }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         aria-label="Åpne chat"
+        animate={pulsing ? { scale: [1, 1.15, 1] } : {}}
+        transition={pulsing ? { repeat: Infinity, duration: 1.2 } : {}}
       >
+        {/* Pulse ring */}
+        {pulsing && (
+          <>
+            <motion.span
+              className="absolute w-14 h-14 rounded-full"
+              style={{ background: 'var(--gradient-primary)', opacity: 0.5 }}
+              animate={{ scale: [1, 1.6], opacity: [0.5, 0] }}
+              transition={{ repeat: Infinity, duration: 1.2 }}
+            />
+            <motion.span
+              className="absolute w-14 h-14 rounded-full"
+              style={{ background: 'var(--gradient-primary)', opacity: 0.3 }}
+              animate={{ scale: [1, 2], opacity: [0.3, 0] }}
+              transition={{ repeat: Infinity, duration: 1.2, delay: 0.3 }}
+            />
+          </>
+        )}
         <AnimatePresence mode="wait">
           {open ? (
             <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>

@@ -33,6 +33,109 @@ function formatShortDate(dateStr: string) {
   }
 }
 
+// Generate upcoming date for a given weekday (0=Sunday, 1=Monday, ..., 6=Saturday)
+function nextWeekday(dayOfWeek: number, weeksAhead = 0): string {
+  const today = new Date()
+  const todayDay = today.getDay()
+  let daysUntil = (dayOfWeek - todayDay + 7) % 7
+  if (daysUntil === 0) daysUntil = 7 // Don't use today itself, use next occurrence
+  daysUntil += weeksAhead * 7
+  const result = new Date(today)
+  result.setDate(today.getDate() + daysUntil)
+  return result.toISOString().split('T')[0]
+}
+
+// Static test events as fallback when no Supabase events exist
+const TEST_EVENTS: Event[] = ([
+  // Treninger — next 3 Mondays
+  {
+    id: 'test-trening-1',
+    title: 'STOLL Ukentlig Trening',
+    description: 'Bli med på vår faste ukentlige trening! Åpent for alle nivåer — fra nybegynnere til seriøse esport-spillere. Vi fokuserer på CS2, Valorant og Rocket League. Ta med headset og godt humør! 🎮',
+    date: nextWeekday(1, 0),
+    time: '17:00 - 19:00',
+    location: 'STOLL Esportsenter, Bergen',
+    event_type: 'trening' as const,
+    capacity: 30,
+    booking_enabled: true,
+    published: true,
+  },
+  {
+    id: 'test-trening-2',
+    title: 'STOLL Ukentlig Trening',
+    description: 'Bli med på vår faste ukentlige trening! Åpent for alle nivåer — fra nybegynnere til seriøse esport-spillere. Vi fokuserer på CS2, Valorant og Rocket League. 🎮',
+    date: nextWeekday(1, 1),
+    time: '17:00 - 19:00',
+    location: 'STOLL Esportsenter, Bergen',
+    event_type: 'trening' as const,
+    capacity: 30,
+    booking_enabled: true,
+    published: true,
+  },
+  {
+    id: 'test-trening-3',
+    title: 'STOLL Ukentlig Trening',
+    description: 'Bli med på vår faste ukentlige trening! Åpent for alle nivåer. Vi fokuserer på CS2, Valorant og Rocket League. 🎮',
+    date: nextWeekday(1, 2),
+    time: '17:00 - 19:00',
+    location: 'STOLL Esportsenter, Bergen',
+    event_type: 'trening' as const,
+    capacity: 30,
+    booking_enabled: true,
+    published: true,
+  },
+  // Fredagsturnering — next 2 Fridays
+  {
+    id: 'test-tournament-1',
+    title: 'STOLL Fredagsturnering',
+    description: 'Vår populære fredagsturnering er tilbake! Meld laget ditt på og kjempe om pengepremier og æren av å kalle seg STOLL-mester. Denne uken: CS2 5v5. Premier til topp 3 lag! 🏆',
+    date: nextWeekday(5, 0),
+    time: '18:00 - 22:00',
+    location: 'STOLL Esportsenter, Bergen',
+    event_type: 'tournament' as const,
+    capacity: 64,
+    booking_enabled: true,
+    published: true,
+  },
+  {
+    id: 'test-tournament-2',
+    title: 'STOLL Fredagsturnering — Valorant',
+    description: 'Fredagsturnering i Valorant! 5v5, dobbel-eliminasjon bracket. Alle rank-nivåer er velkomne. Premier til topp 3 lag. Registrer laget ditt innen torsdag kveld. 🏆',
+    date: nextWeekday(5, 1),
+    time: '18:00 - 22:00',
+    location: 'STOLL Esportsenter, Bergen',
+    event_type: 'tournament' as const,
+    capacity: 64,
+    booking_enabled: true,
+    published: true,
+  },
+  // Åpen gaming — next 2 Saturdays
+  {
+    id: 'test-arrangement-1',
+    title: 'Åpen Gaming — Lørdagssession',
+    description: 'Lørdag er fri-gaming dag på STOLL! Sleng deg ned på en av våre topputstyrte PC-er og spill det du vil. Venner, familie og alle er velkomne. Vi har snacks, drikke og god stemning. 🎮☕',
+    date: nextWeekday(6, 0),
+    time: '12:00 - 17:00',
+    location: 'STOLL Esportsenter, Bergen',
+    event_type: 'arrangement' as const,
+    capacity: 50,
+    booking_enabled: false,
+    published: true,
+  },
+  {
+    id: 'test-arrangement-2',
+    title: 'Åpen Gaming — Lørdagssession',
+    description: 'Fri gaming-dag for hele familien! Kom innom når det passer, spill favorittspillene dine og møt andre gamere i Bergen. Ingen booking nødvendig for åpen gaming. 🎮',
+    date: nextWeekday(6, 1),
+    time: '12:00 - 17:00',
+    location: 'STOLL Esportsenter, Bergen',
+    event_type: 'arrangement' as const,
+    capacity: 50,
+    booking_enabled: false,
+    published: true,
+  },
+] as Event[]).sort((a, b) => a.date.localeCompare(b.date))
+
 export default function EventCalendar() {
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
@@ -41,8 +144,11 @@ export default function EventCalendar() {
 
   useEffect(() => {
     getEvents()
-      .then(setEvents)
-      .catch(console.error)
+      .then(data => {
+        // Use test events as fallback if no Supabase events exist
+        setEvents(data.length > 0 ? data : TEST_EVENTS)
+      })
+      .catch(() => setEvents(TEST_EVENTS))
       .finally(() => setLoading(false))
   }, [])
 
