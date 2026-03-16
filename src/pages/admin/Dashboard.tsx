@@ -23,6 +23,7 @@ import {
   Share2,
   Bot,
   X,
+  ImageIcon,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ const menuItems = [
   { icon: FileText, label: "Innhold", path: "/admin/content" },
   { icon: Calendar, label: "Events", path: "/admin/events" },
   { icon: ClipboardList, label: "Bookinger", path: "/admin/bookings" },
+  { icon: ImageIcon, label: "Mediebibliotek", path: "/admin/media" },
   { icon: Users, label: "Sponsorer", path: "/admin/sponsors" },
   { icon: Package, label: "Pakker", path: "/admin/packages" },
   { icon: BookOpen, label: "Blogg", path: "/admin/blog" },

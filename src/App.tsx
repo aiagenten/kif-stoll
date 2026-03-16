@@ -27,6 +27,7 @@ import AdminSoMe from './pages/admin/SoMe'
 import AdminSoMeEditor from './pages/admin/SoMeEditor'
 import AdminSoMeSettings from './pages/admin/SoMeSettings'
 import AdminChatbot from './pages/admin/Chatbot'
+import AdminMedia from './pages/admin/Media'
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -63,6 +64,7 @@ function App() {
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="bookings" element={<AdminBookings />} />
                 <Route path="sponsors" element={<AdminSponsors />} />
+                <Route path="media" element={<AdminMedia />} />
                 <Route path="some" element={<AdminSoMe />} />
                 <Route path="some/new" element={<AdminSoMeEditor />} />
                 <Route path="some/edit/:id" element={<AdminSoMeEditor />} />
